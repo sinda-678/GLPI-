@@ -1090,3 +1090,380 @@ CSRF check failed for User ID:  at /
   ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
   ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
   ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 11:37:08] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 11:46:17] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 12:14:49] User ID: `7` tried to execute an invalid request on `/front/dropdown.php`.
+
+  Backtrace :
+  ./front/dropdown.php:48                            
+  ...Glpi/Controller/LegacyFileLoadController.php:64 require()
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\LegacyFileLoadController->__invoke()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 13:02:20] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 13:18:41] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 13:53:26] User ID: `7` tried to execute an invalid request on `/front/ticket.form.php?id=8`.
+
+  Backtrace :
+  ./front/ticket.form.php:86                         
+  ...Glpi/Controller/LegacyFileLoadController.php:64 require()
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\LegacyFileLoadController->__invoke()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 14:11:48] User ID: `Anonymous` tried to execute an invalid request on `/Form/Render/2`.
+
+  Backtrace :
+  ...roller/Form/Utils/CanCheckAccessPolicies.php:65 
+  .../Glpi/Controller/Form/RendererController.php:77 Glpi\Controller\Form\RendererController->checkFormAccessPolicies()
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\Form\RendererController->__invoke()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+2026-07-13 14:55:33 [@vmi3327371]
+CSRF check failed for User ID:  at /
+[2026-07-13 14:55:33] User ID: `Anonymous` tried to execute an invalid request on `/`.
+
+  Backtrace :
+  ./src/Session.php:1783                             
+  ...ner/ControllerListener/CheckCsrfListener.php:89 Session::checkCSRF()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+2026-07-13 15:23:23 [2@vmi3327371]
+CSRF check failed for User ID: 2 at /front/user.form.php
+[2026-07-13 15:23:23] User ID: `2` tried to execute an invalid request on `/front/user.form.php`.
+
+  Backtrace :
+  ./src/Session.php:1783                             
+  ...ner/ControllerListener/CheckCsrfListener.php:89 Session::checkCSRF()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 15:30:25] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 15:47:09] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+2026-07-13 16:31:02 [2@vmi3327371]
+CSRF check failed for User ID: 2 at /ajax/switchfoldmenu.php
+[2026-07-13 16:31:02] User ID: `2` tried to execute an invalid request on `/ajax/switchfoldmenu.php`.
+
+  Backtrace :
+  ./src/Session.php:1783                             
+  ...ner/ControllerListener/CheckCsrfListener.php:82 Session::checkCSRF()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+2026-07-13 20:17:12 [@vmi3327371]
+CSRF check failed for User ID:  at /
+[2026-07-13 20:17:12] User ID: `Anonymous` tried to execute an invalid request on `/`.
+
+  Backtrace :
+  ./src/Session.php:1783                             
+  ...ner/ControllerListener/CheckCsrfListener.php:89 Session::checkCSRF()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 20:59:23] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 20:59:24] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+2026-07-13 20:59:45 [@vmi3327371]
+CSRF check failed for User ID:  at /
+[2026-07-13 20:59:45] User ID: `Anonymous` tried to execute an invalid request on `/`.
+
+  Backtrace :
+  ./src/Session.php:1783                             
+  ...ner/ControllerListener/CheckCsrfListener.php:89 Session::checkCSRF()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+2026-07-13 20:59:58 [@vmi3327371]
+CSRF check failed for User ID:  at /
+[2026-07-13 20:59:58] User ID: `Anonymous` tried to execute an invalid request on `/`.
+
+  Backtrace :
+  ./src/Session.php:1783                             
+  ...ner/ControllerListener/CheckCsrfListener.php:89 Session::checkCSRF()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 21:16:24] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 22:01:21] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-13 23:39:59] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-14 00:35:26] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+2026-07-14 01:46:42 [@vmi3327371]
+CSRF check failed for User ID:  at /
+[2026-07-14 01:46:42] User ID: `Anonymous` tried to execute an invalid request on `/`.
+
+  Backtrace :
+  ./src/Session.php:1783                             
+  ...ner/ControllerListener/CheckCsrfListener.php:89 Session::checkCSRF()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+2026-07-14 02:15:08 [@vmi3327371]
+CSRF check failed for User ID:  at /
+[2026-07-14 02:15:08] User ID: `Anonymous` tried to execute an invalid request on `/`.
+
+  Backtrace :
+  ./src/Session.php:1783                             
+  ...ner/ControllerListener/CheckCsrfListener.php:89 Session::checkCSRF()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-14 03:35:55] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-14 05:42:45] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-14 05:58:19] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-14 08:34:57] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+[2026-07-14 08:43:21] User ID: `Anonymous` tried to execute an invalid request on `/`.
+  Additional information: Inventory is disabled
+  Backtrace :
+  ./src/Glpi/Controller/InventoryController.php:67   
+  ./vendor/symfony/http-kernel/HttpKernel.php:181    Glpi\Controller\InventoryController->index()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ...tener/CatchInventoryAgentRequestListener.php:77 Symfony\Component\HttpKernel\HttpKernel->handle()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener->onKernelRequest()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:157    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
