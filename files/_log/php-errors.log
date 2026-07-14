@@ -248,3 +248,1053 @@
   ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
   ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
 
+[2026-07-14 14:22:46] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:22:55] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:23:00] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:23:05] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:23:10] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:23:15] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:23:20] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:23:25] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:23:30] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:23:35] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:23:40] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:23:45] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:23:50] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:23:55] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:24:00] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:24:05] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:24:10] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:24:15] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:24:20] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:24:25] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:24:30] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:24:35] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:24:40] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:24:45] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:24:50] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:24:55] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:25:00] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:25:05] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:25:10] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:25:15] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:25:20] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:25:25] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:25:30] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:25:35] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:25:40] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:25:45] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:25:50] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:25:55] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:26:00] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:26:05] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:27:48] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:27:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:27:58] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:28:03] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:28:12] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:28:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:29:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:30:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:36:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:37:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:38:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:39:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:52:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:53:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:54:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:55:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:56:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:57:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:58:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 14:59:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:00:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:01:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:02:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:03:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:04:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:05:54] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:06:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:07:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:08:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:09:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:10:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:11:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:12:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:13:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
+[2026-07-14 15:14:53] glpi.CRITICAL:   *** Uncaught PHP Exception Glpi\Exception\SessionExpiredException: "" at Session.php line 1068
+  Backtrace :
+  ./src/Session.php:1068                             
+  ./src/Session.php:1182                             Session::checkValidSessionId()
+  ./src/Glpi/Http/Firewall.php:144                   Session::checkLoginUser()
+  ...trollerListener/FirewallStrategyListener.php:82 Glpi\Http\Firewall->applyStrategy()
+  ...ymfony/event-dispatcher/EventDispatcher.php:260 Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener->onKernelController()
+  ...ymfony/event-dispatcher/EventDispatcher.php:220 Symfony\Component\EventDispatcher\EventDispatcher::Symfony\Component\EventDispatcher\{closure}()
+  ...symfony/event-dispatcher/EventDispatcher.php:56 Symfony\Component\EventDispatcher\EventDispatcher->callListeners()
+  ./vendor/symfony/http-kernel/HttpKernel.php:169    Symfony\Component\EventDispatcher\EventDispatcher->dispatch()
+  ./vendor/symfony/http-kernel/HttpKernel.php:76     Symfony\Component\HttpKernel\HttpKernel->handleRaw()
+  ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
+  ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
+
