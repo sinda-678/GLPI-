@@ -1298,3 +1298,14 @@
   ./vendor/symfony/http-kernel/Kernel.php:197        Symfony\Component\HttpKernel\HttpKernel->handle()
   ./public/index.php:70                              Symfony\Component\HttpKernel\Kernel->handle()
 
+[2026-07-14 19:28:31] glpi.WARNING:   *** User Warning: Requested file ./.\css/core_palettes.scss does not exists. at Html.php line 6456
+  Backtrace :
+  .\src\Html.php:6456                                
+  ...c\Glpi\Console\Build\CompileScssCommand.php:151 Html::compileScss()
+  .\vendor\symfony\console\Command\Command.php:326   Glpi\Console\Build\CompileScssCommand->execute()
+  .\vendor\symfony\console\Application.php:1096      Symfony\Component\Console\Command\Command->run()
+  .\src\Glpi\Console\Application.php:320             Symfony\Component\Console\Application->doRunCommand()
+  .\vendor\symfony\console\Application.php:324       Glpi\Console\Application->doRunCommand()
+  .\vendor\symfony\console\Application.php:175       Symfony\Component\Console\Application->doRun()
+  .\bin\console:144                                  Symfony\Component\Console\Application->run()
+
