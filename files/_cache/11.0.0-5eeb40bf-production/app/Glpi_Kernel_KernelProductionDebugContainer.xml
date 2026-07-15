@@ -9,8 +9,8 @@
     <parameter key="kernel.runtime_mode.cli">%env(not:default:kernel.runtime_mode.web:)%</parameter>
     <parameter key="kernel.runtime_mode.worker">%env(bool:default::key:worker:default:kernel.runtime_mode:)%</parameter>
     <parameter key="kernel.debug">true</parameter>
-    <parameter key="kernel.build_dir">C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app</parameter>
-    <parameter key="kernel.cache_dir">C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app</parameter>
+    <parameter key="kernel.build_dir">C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app</parameter>
+    <parameter key="kernel.cache_dir">C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app</parameter>
     <parameter key="kernel.logs_dir">C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_log</parameter>
     <parameter key="kernel.bundles" type="collection">
       <parameter key="FrameworkBundle">Symfony\Bundle\FrameworkBundle\FrameworkBundle</parameter>
@@ -23,7 +23,7 @@
     </parameter>
     <parameter key="kernel.charset">UTF-8</parameter>
     <parameter key="kernel.container_class">Glpi_Kernel_KernelProductionDebugContainer</parameter>
-    <parameter key="glpi.default_secret">ab66290915cd9a15d6ac714691d7dff49c448e9f6941a5004a15bb60f5da04a2</parameter>
+    <parameter key="glpi.default_secret">b42685e0a6cbf2eede0f0ce591def01b5fa128cd98ece4eaa3efa8d1ecc67dfe</parameter>
     <parameter key="env(APP_SECRET_FILE)">C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-/config/glpicrypt.key</parameter>
     <parameter key="kernel.secret">%env(default:glpi.default_secret:file:APP_SECRET_FILE)%</parameter>
     <parameter key="debug.error_handler.throw_at">4437</parameter>
@@ -50,15 +50,15 @@
     <parameter key="kernel.enabled_locales" type="collection"/>
     <parameter key="kernel.error_controller">Glpi\Controller\ErrorController</parameter>
     <parameter key="debug.file_link_format">%env(default::SYMFONY_IDE)%</parameter>
-    <parameter key="debug.container.dump">C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/Glpi_Kernel_KernelProductionDebugContainer.xml</parameter>
+    <parameter key="debug.container.dump">C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/Glpi_Kernel_KernelProductionDebugContainer.xml</parameter>
     <parameter key="router.request_context.host">localhost</parameter>
     <parameter key="router.request_context.scheme">http</parameter>
     <parameter key="router.request_context.base_url"></parameter>
     <parameter key="router.resource">kernel::loadRoutes</parameter>
-    <parameter key="router.cache_dir">C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app</parameter>
+    <parameter key="router.cache_dir">C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app</parameter>
     <parameter key="request_listener.http_port">80</parameter>
     <parameter key="request_listener.https_port">443</parameter>
-    <parameter key="serializer.mapping.cache.file">C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/serialization.php</parameter>
+    <parameter key="serializer.mapping.cache.file">C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/serialization.php</parameter>
     <parameter key="cache.prefix.seed">_C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-.Glpi_Kernel_KernelProductionDebugContainer</parameter>
     <parameter key="data_collector.templates" type="collection"/>
     <parameter key="console.command.ids" type="collection"/>
@@ -868,7 +868,7 @@
       </argument>
     </service>
     <service id="http_cache.store" class="Symfony\Component\HttpKernel\HttpCache\Store">
-      <argument>C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/http_cache</argument>
+      <argument>C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/http_cache</argument>
     </service>
     <service id="url_helper" class="Symfony\Component\HttpFoundation\UrlHelper">
       <argument type="service" id="request_stack"/>
@@ -878,7 +878,7 @@
       <tag name="container.no_preload"/>
       <argument type="tagged_iterator" tag="kernel.cache_warmer"/>
       <argument>true</argument>
-      <argument>C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/Glpi_Kernel_KernelProductionDebugContainerDeprecations.log</argument>
+      <argument>C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/Glpi_Kernel_KernelProductionDebugContainerDeprecations.log</argument>
     </service>
     <service id="cache_clearer" class="Symfony\Component\HttpKernel\CacheClearer\ChainCacheClearer">
       <argument type="tagged_iterator" tag="kernel.cache_clearer"/>
@@ -1351,7 +1351,7 @@
       <tag name="kernel.reset" method="reset"/>
       <argument>wRXF7MQwLd</argument>
       <argument>0</argument>
-      <argument>C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/pools/app</argument>
+      <argument>C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/pools/app</argument>
       <argument type="service" id="cache.default_marshaller" on-invalid="ignore"/>
       <call method="setLogger">
         <argument type="service" id="logger" on-invalid="ignore"/>
@@ -1367,7 +1367,7 @@
       <argument>uIJDHGSqRf</argument>
       <argument>0</argument>
       <argument>%container.build_id%</argument>
-      <argument>C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/pools/system</argument>
+      <argument>C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/pools/system</argument>
       <argument type="service" id="logger" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
     </service>
@@ -1377,7 +1377,7 @@
       <argument>rmekdGO4Sf</argument>
       <argument>0</argument>
       <argument>%container.build_id%</argument>
-      <argument>C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/pools/system</argument>
+      <argument>C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/pools/system</argument>
       <argument type="service" id="logger" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
     </service>
@@ -1387,7 +1387,7 @@
       <argument>g4pGrJsOtV</argument>
       <argument>0</argument>
       <argument>%container.build_id%</argument>
-      <argument>C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/pools/system</argument>
+      <argument>C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/pools/system</argument>
       <argument type="service" id="logger" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
     </service>
@@ -1397,7 +1397,7 @@
       <argument>ndgBI7o2Yi</argument>
       <argument>0</argument>
       <argument>%container.build_id%</argument>
-      <argument>C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/pools/system</argument>
+      <argument>C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/pools/system</argument>
       <argument type="service" id="logger" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
     </service>
@@ -1407,7 +1407,7 @@
       <argument>+VeW+u7ra6</argument>
       <argument>0</argument>
       <argument>%container.build_id%</argument>
-      <argument>C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/pools/system</argument>
+      <argument>C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/pools/system</argument>
       <argument type="service" id="logger" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
     </service>
@@ -1417,7 +1417,7 @@
       <argument></argument>
       <argument>0</argument>
       <argument>%container.build_id%</argument>
-      <argument>C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/pools/system</argument>
+      <argument>C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/pools/system</argument>
       <argument type="service" id="logger" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
     </service>
@@ -1436,7 +1436,7 @@
       <tag name="monolog.logger" channel="cache"/>
       <argument></argument>
       <argument>0</argument>
-      <argument>C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/pools/app</argument>
+      <argument>C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/pools/app</argument>
       <argument type="service" id="cache.default_marshaller" on-invalid="ignore"/>
       <call method="setLogger">
         <argument type="service" id="logger" on-invalid="ignore"/>
@@ -1726,7 +1726,7 @@
       <argument type="service" id=".service_locator.PvoQzFT.router.default"/>
       <argument>kernel::loadRoutes</argument>
       <argument type="collection">
-        <argument key="cache_dir">C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app</argument>
+        <argument key="cache_dir">C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app</argument>
         <argument key="debug">true</argument>
         <argument key="generator_class">Symfony\Component\Routing\Generator\CompiledUrlGenerator</argument>
         <argument key="generator_dumper_class">Symfony\Component\Routing\Generator\Dumper\CompiledUrlGeneratorDumper</argument>
@@ -1914,10 +1914,10 @@
           </service>
         </argument>
       </argument>
-      <argument>C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/serialization.php</argument>
+      <argument>C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/serialization.php</argument>
     </service>
     <service id="serializer.mapping.cache.symfony" class="Psr\Cache\CacheItemPoolInterface">
-      <argument>C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-\files\_cache\11.0.0-5eeb40bf-production\app/serialization.php</argument>
+      <argument>C:/Users/ADMIN/Desktop/Nouveau dossier (2)/GLPI-/files/_cache/11.0.0-5eeb40bf-production/app/serialization.php</argument>
       <argument type="service" id="cache.serializer"/>
       <factory class="Symfony\Component\Cache\Adapter\PhpArrayAdapter" method="create"/>
     </service>
