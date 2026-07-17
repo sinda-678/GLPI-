@@ -145,4 +145,26 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         throw new AccessDeniedHttpException();
     }
     $twig->display("components/itilobject/timeline/{$template}.html.twig", $params);
+} elseif (($_REQUEST['action'] ?? null) === 'count_items') {
+    header("Content-Type: application/json; charset=UTF-8");
+    Html::header_nocache();
+
+    if (!isset($_REQUEST['parenttype'], $_REQUEST['items_id'])) {
+        throw new BadRequestHttpException();
+    }
+
+    $parent = getItemForItemtype($_REQUEST['parenttype']);
+    if (!$parent instanceof CommonITILObject) {
+        throw new BadRequestHttpException();
+    }
+
+    $tickets_id = (int) $_REQUEST['items_id'];
+    if (!$parent->getFromDB($tickets_id) || !$parent->canViewItem()) {
+        throw new AccessDeniedHttpException();
+    }
+
+    $timeline = $parent->getTimelineItems(['check_view_rights' => true]);
+    echo json_encode([
+        'count' => count($timeline),
+    ]);
 }

@@ -213,3 +213,46 @@ $(function() {
     }
 });
 </script>
+
+{% if not item.isNewItem() %}
+<script type="text/javascript">
+(function() {
+    var _timelineRefreshInterval = 30000;
+    var _lastTimelineCount = null;
+
+    function checkNewTimelineItems() {
+        $.ajax({
+            url: CFG_GLPI.root_doc + '/ajax/timeline.php',
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                'action': 'count_items',
+                'parenttype': '{{ item.getType() }}',
+                'items_id': {{ item.fields['id'] }}
+            },
+            success: function(data) {
+                if (_lastTimelineCount === null) {
+                    _lastTimelineCount = data.count;
+                    return;
+                }
+                if (data.count > _lastTimelineCount) {
+                    _lastTimelineCount = data.count;
+                    glpi_toast_info(
+                        '{{ __("New response available") }}',
+                        '{{ __("A new response has been added to this ticket. Click to refresh.") }}',
+                        {
+                            duration: 10000,
+                            onclick: function() {
+                                window.location.reload();
+                            }
+                        }
+                    );
+                }
+            }
+        });
+    }
+
+    setInterval(checkNewTimelineItems, _timelineRefreshInterval);
+})();
+</script>
+{% endif %}
