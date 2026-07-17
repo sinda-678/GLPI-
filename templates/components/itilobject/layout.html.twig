@@ -239,14 +239,14 @@ $(function() {
                     _lastTimelineCount = data.count;
                     glpi_toast_info(
                         '{{ __("New response available") }}',
-                        '{{ __("A new response has been added to this ticket. Click to refresh.") }}',
+                        '{{ __("A new response has been added. Refreshing...") }}',
                         {
-                            duration: 10000,
-                            onclick: function() {
-                                window.location.reload();
-                            }
+                            duration: 3000
                         }
                     );
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000);
                 }
             }
         });
