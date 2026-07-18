@@ -217,42 +217,106 @@ $(function() {
 {% if not item.isNewItem() %}
 <script type="text/javascript">
 (function() {
-    var _timelineRefreshInterval = 30000;
-    var _lastTimelineCount = null;
+    var POLL_INTERVAL = 10000;
+    var TOAST_DELAY   = 4000;
+    var RELOAD_DELAY  = 4500;
+    var AJAX_URL      = '{{ path("/ajax/timeline.php") }}';
+    var PARENT_TYPE   = '{{ item.getType() }}';
+    var ITEMS_ID      = {{ item.fields['id'] }};
 
-    function checkNewTimelineItems() {
+    var _lastTimelineCount = null;
+    var _lastMod           = null;
+    var _pollTimer         = null;
+    var _isReloading       = false;
+    var _toastShown        = false;
+
+    function isVisible() {
+        return !(document.hidden || document.webkitHidden || document.msHidden);
+    }
+
+    function isUserTyping() {
+        var $answer = $('#itil-footer').find('textarea:visible, input[type="text"]:visible');
+        if ($answer.length === 0) return false;
+        var focused = document.activeElement;
+        return $answer.is(focused) || $answer.find(focused).length > 0;
+    }
+
+    function stopPolling() {
+        if (_pollTimer) {
+            clearInterval(_pollTimer);
+            _pollTimer = null;
+        }
+    }
+
+    function doPoll() {
+        if (_isReloading || !isVisible()) return;
+
         $.ajax({
-            url: CFG_GLPI.root_doc + '/ajax/timeline.php',
+            url: AJAX_URL,
             type: 'GET',
             dataType: 'json',
+            timeout: 8000,
             data: {
-                'action': 'count_items',
-                'parenttype': '{{ item.getType() }}',
-                'items_id': {{ item.fields['id'] }}
+                'action':     'count_items',
+                'parenttype': PARENT_TYPE,
+                'items_id':   ITEMS_ID
             },
             success: function(data) {
                 if (_lastTimelineCount === null) {
-                    _lastTimelineCount = data.count;
+                    _lastTimelineCount = data.timeline_count;
+                    _lastMod           = data.last_mod;
                     return;
                 }
-                if (data.count > _lastTimelineCount) {
-                    _lastTimelineCount = data.count;
-                    glpi_toast_info(
-                        '{{ __("New response available") }}',
-                        '{{ __("A new response has been added. Refreshing...") }}',
-                        {
-                            delay: 4000
+
+                if (data.timeline_count > _lastTimelineCount || data.last_mod !== _lastMod) {
+                    _lastTimelineCount = data.timeline_count;
+                    _lastMod           = data.last_mod;
+
+                    if (_toastShown) return;
+
+                    if (isUserTyping()) {
+                        if (!_toastShown) {
+                            glpi_toast_info(
+                                'Nouveau contenu disponible',
+                                'Un nouveau élément a été ajouté au ticket.',
+                                { delay: 8000 }
+                            );
+                            _toastShown = true;
                         }
+                        return;
+                    }
+
+                    _isReloading = true;
+                    stopPolling();
+
+                    glpi_toast_info(
+                        'Nouveau contenu disponible',
+                        'Actualisation en cours...',
+                        { delay: TOAST_DELAY }
                     );
+
                     setTimeout(function() {
                         window.location.reload();
-                    }, 4500);
+                    }, RELOAD_DELAY);
                 }
+            },
+            error: function() {
+                // Silently retry on next interval
             }
         });
     }
 
-    setInterval(checkNewTimelineItems, _timelineRefreshInterval);
+    $(document).on('visibilitychange', function() {
+        if (isVisible() && !_pollTimer && !_isReloading) {
+            doPoll();
+            _pollTimer = setInterval(doPoll, POLL_INTERVAL);
+        } else if (!isVisible() && _pollTimer) {
+            stopPolling();
+        }
+    });
+
+    doPoll();
+    _pollTimer = setInterval(doPoll, POLL_INTERVAL);
 })();
 </script>
 {% endif %}

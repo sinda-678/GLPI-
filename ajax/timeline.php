@@ -147,7 +147,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     $twig->display("components/itilobject/timeline/{$template}.html.twig", $params);
 } elseif (($_REQUEST['action'] ?? null) === 'count_items') {
     header("Content-Type: application/json; charset=UTF-8");
-    Html::header_nocache();
+    header("Cache-Control: no-store, no-cache, must-revalidate");
 
     if (!isset($_REQUEST['parenttype'], $_REQUEST['items_id'])) {
         throw new BadRequestHttpException();
@@ -163,8 +163,73 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         throw new AccessDeniedHttpException();
     }
 
-    $timeline = $parent->getTimelineItems(['check_view_rights' => true]);
+    global $DB;
+
+    $count = 0;
+
+    // --- Followups (with private restriction) ---
+    $restrict_fup = [
+        'itemtype' => $parent::getType(),
+        'items_id' => $tickets_id,
+    ];
+    if (!Session::haveRight("followup", ITILFollowup::SEEPRIVATE)) {
+        $restrict_fup['OR'] = [
+            'is_private' => 0,
+            'users_id'   => Session::getCurrentInterface() === "central" ? (int) Session::getLoginUserID() : 0,
+        ];
+    }
+    $iterator = $DB->request([
+        'SELECT' => new QueryExpression('COUNT(*) AS cnt'),
+        'FROM'   => 'glpi_itilfollowups',
+        'WHERE'  => $restrict_fup,
+    ]);
+    $count += (int) $iterator->current()['cnt'];
+
+    // --- Tasks ---
+    $taskClass = $parent::getTaskClass();
+    $iterator = $DB->request([
+        'SELECT' => new QueryExpression('COUNT(*) AS cnt'),
+        'FROM'   => (new $taskClass())->getTable(),
+        'WHERE'  => [
+            $parent::getForeignKeyField() => $tickets_id,
+        ],
+    ]);
+    $count += (int) $iterator->current()['cnt'];
+
+    // --- Solutions ---
+    $iterator = $DB->request([
+        'SELECT' => new QueryExpression('COUNT(*) AS cnt'),
+        'FROM'   => 'glpi_itilsolutions',
+        'WHERE'  => [
+            'itemtype' => $parent::getType(),
+            'items_id' => $tickets_id,
+        ],
+    ]);
+    $count += (int) $iterator->current()['cnt'];
+
+    // --- Validations ---
+    $iterator = $DB->request([
+        'SELECT' => new QueryExpression('COUNT(*) AS cnt'),
+        'FROM'   => 'glpi_itilvalidations',
+        'WHERE'  => [
+            $parent::getForeignKeyField() => $tickets_id,
+        ],
+    ]);
+    $count += (int) $iterator->current()['cnt'];
+
+    // --- Reminders ---
+    $iterator = $DB->request([
+        'SELECT' => new QueryExpression('COUNT(*) AS cnt'),
+        'FROM'   => 'glpi_itilreminders',
+        'WHERE'  => [
+            $parent::getForeignKeyField() => $tickets_id,
+        ],
+    ]);
+    $count += (int) $iterator->current()['cnt'];
+
     echo json_encode([
-        'count' => count($timeline),
+        'timeline_count' => $count,
+        'last_mod'       => $parent->fields['date_mod'],
+        'status'         => $parent->fields['status'],
     ]);
 }
