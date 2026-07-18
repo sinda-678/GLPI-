@@ -23,7 +23,7 @@
     </parameter>
     <parameter key="kernel.charset">UTF-8</parameter>
     <parameter key="kernel.container_class">Glpi_Kernel_KernelProductionDebugContainer</parameter>
-    <parameter key="glpi.default_secret">38ee0aeead942ba94d1a1050c3d82185eda2344170ae801429d2e4f4cea5afef</parameter>
+    <parameter key="glpi.default_secret">5a166929c6f79fa19ce6de8dc12b3a6bb11e341f8104068f033e59b4f40e8827</parameter>
     <parameter key="env(APP_SECRET_FILE)">C:\Users\ADMIN\Desktop\Nouveau dossier (2)\GLPI-/config/glpicrypt.key</parameter>
     <parameter key="kernel.secret">%env(default:glpi.default_secret:file:APP_SECRET_FILE)%</parameter>
     <parameter key="debug.error_handler.throw_at">4437</parameter>
