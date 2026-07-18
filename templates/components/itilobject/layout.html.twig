@@ -217,275 +217,111 @@ $(function() {
 {% if not item.isNewItem() %}
 {#
  # =========================================================================
- # AUTO-REFRESH — Ticket Conversation Page
+ # LIVE NOTIFICATION — Ticket Conversation Page
  # =========================================================================
  #
- # Automatically reloads the ticket page every 30 seconds to ensure users
- # always see the latest activity (replies, status changes, assignments,
- # solutions, etc.) without manually refreshing.
+ # Polls the server every 10 seconds to detect new timeline activity.
+ # When a new message is detected, displays a toast notification with a
+ # "Rafraichir" button. No automatic page reload.
  #
- # Smart behavior:
- #   - Pauses when the browser tab is hidden (Page Visibility API)
- #   - Postpones if the user is typing in an editor/input
- #   - Postpones if a file upload is in progress
- #   - Postpones if a form is being submitted
- #   - Postpones if a modal dialog is open
- #   - Shows a 5-second countdown banner with "Refresh Now" / "Postpone"
- #
- # Single timer, no memory leaks, cleaned up on page unload.
+ # - Pauses when the tab is hidden (Page Visibility API)
+ # - Silently retries on network errors
+ # - Single timer, no memory leaks
  # =========================================================================
  #}
 <script type="text/javascript">
 (function() {
-    // ── Configuration ──────────────────────────────────────────────────
-    var REFRESH_INTERVAL = 30;   // seconds between refresh cycles
-    var WARNING_SECONDS  = 5;    // seconds before refresh to show banner
-    var BANNER_ID        = 'glpi-auto-refresh-banner';
+    var POLL_INTERVAL = 10000;
+    var AJAX_URL      = '{{ path("/ajax/timeline.php") }}';
+    var PARENT_TYPE   = '{{ item.getType() }}';
+    var ITEMS_ID      = {{ item.fields['id'] }};
 
-    // ── State ──────────────────────────────────────────────────────────
-    var _secondsLeft    = REFRESH_INTERVAL;
-    var _timer          = null;
-    var _paused         = false;
-    var _initialValues  = {};    // stores initial editor content for change detection
+    var _lastCount = null;
+    var _lastMod   = null;
+    var _timer     = null;
+    var _paused    = false;
+    var _notified  = false;
 
-    // ── Safety checks ──────────────────────────────────────────────────
-
-    /**
-     * Detect if any editor/textarea/text input contains unsaved text
-     * that differs from when the page loaded.
-     */
-    function hasUnsavedText() {
-        // TinyMCE editors
-        if (typeof tinymce !== 'undefined') {
-            var editors = tinymce.get();
-            for (var i = 0; i < editors.length; i++) {
-                var id = editors[i].id;
-                var content = editors[i].getContent();
-                if (_initialValues['mce_' + id] === undefined) {
-                    _initialValues['mce_' + id] = content;
-                }
-                if (content !== '' && content !== _initialValues['mce_' + id]) {
-                    return true;
-                }
-            }
-        }
-
-        // Plain textareas
-        var textareas = document.querySelectorAll('#itil-footer textarea, #itil-object-container textarea');
-        for (var i = 0; i < textareas.length; i++) {
-            var ta = textareas[i];
-            var key = 'ta_' + (ta.id || i);
-            if (_initialValues[key] === undefined) {
-                _initialValues[key] = ta.value;
-            }
-            if (ta.value !== '' && ta.value !== _initialValues[key]) {
-                return true;
-            }
-        }
-
-        // Text inputs (excluding hidden, submit, button, checkbox, radio)
-        var inputs = document.querySelectorAll('#itil-footer input[type="text"], #itil-object-container input[type="text"]');
-        for (var i = 0; i < inputs.length; i++) {
-            var inp = inputs[i];
-            var key = 'inp_' + (inp.name || inp.id || i);
-            if (_initialValues[key] === undefined) {
-                _initialValues[key] = inp.value;
-            }
-            if (inp.value !== '' && inp.value !== _initialValues[key]) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Detect if a textarea, input, or contenteditable element is focused.
-     */
-    function hasFocusedInput() {
-        var el = document.activeElement;
-        if (!el || el === document.body) return false;
-        var tag = el.tagName.toLowerCase();
-        if (tag === 'textarea') return true;
-        if (tag === 'input' && el.type !== 'hidden' && el.type !== 'submit' && el.type !== 'button') return true;
-        if (el.getAttribute('contenteditable') === 'true') return true;
-        // Check if focus is inside a TinyMCE editor
-        if (typeof tinymce !== 'undefined' && tinymce.activeElement) return true;
-        return false;
-    }
-
-    /**
-     * Detect if a file upload is in progress.
-     */
-    function hasFileUpload() {
-        // Check file inputs with files selected
-        var fileInputs = document.querySelectorAll('#itil-footer input[type="file"], #itil-object-container input[type="file"]');
-        for (var i = 0; i < fileInputs.length; i++) {
-            if (fileInputs[i].files && fileInputs[i].files.length > 0) {
-                return true;
-            }
-        }
-        // Check for active upload indicators (GLPI upload progress bar)
-        if (document.querySelector('.fileupload, .upload-progress, .glpi-upload-progress')) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Detect if a form is currently being submitted.
-     */
-    function hasFormSubmit() {
-        var forms = document.querySelectorAll('#itil-footer form, #itil-object-container form, #itil-form');
-        for (var i = 0; i < forms.length; i++) {
-            if (forms[i].getAttribute('data-submitting') === 'true') {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Detect if a Bootstrap modal dialog is currently open.
-     */
-    function hasOpenModal() {
-        var modals = document.querySelectorAll('.modal.show, .modal[style*="display: block"]');
-        return modals.length > 0;
-    }
-
-    /**
-     * Master safety check: returns true if ANY unsafe condition is met.
-     */
-    function isUnsafe() {
-        return hasUnsavedText() || hasFocusedInput() || hasFileUpload() || hasFormSubmit() || hasOpenModal();
-    }
-
-    // ── Banner ─────────────────────────────────────────────────────────
-
-    function showBanner() {
-        if (document.getElementById(BANNER_ID)) return;
-
-        var banner = document.createElement('div');
-        banner.id = BANNER_ID;
-        banner.setAttribute('role', 'alert');
-        banner.style.cssText = [
-            'position:fixed',
-            'top:0',
-            'left:0',
-            'right:0',
-            'z-index:99999',
-            'background:#0d6efd',
-            'color:#fff',
-            'padding:8px 16px',
-            'font-size:14px',
-            'font-family:inherit',
-            'display:flex',
-            'align-items:center',
-            'justify-content:center',
-            'gap:12px',
-            'box-shadow:0 2px 8px rgba(0,0,0,0.2)'
-        ].join(';');
-
-        var msg = document.createElement('span');
-        msg.id = BANNER_ID + '-text';
-        msg.textContent = 'Cette page sera actualisée dans ' + _secondsLeft + ' seconde(s) pour charger les dernières mises à jour du ticket.';
-        banner.appendChild(msg);
-
-        var btnRefresh = document.createElement('button');
-        btnRefresh.textContent = 'Actualiser maintenant';
-        btnRefresh.style.cssText = 'background:#fff;color:#0d6efd;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;font-weight:bold;font-size:13px;white-space:nowrap;';
-        btnRefresh.onclick = function() { window.location.reload(); };
-        banner.appendChild(btnRefresh);
-
-        var btnPostpone = document.createElement('button');
-        btnPostpone.textContent = 'Reporter';
-        btnPostpone.style.cssText = 'background:transparent;color:#fff;border:1px solid #fff;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:13px;white-space:nowrap;';
-        btnPostpone.onclick = function() { postpone(); };
-        banner.appendChild(btnPostpone);
-
-        document.body.appendChild(banner);
-    }
-
-    function updateBannerText() {
-        var textEl = document.getElementById(BANNER_ID + '-text');
-        if (textEl) {
-            textEl.textContent = 'Cette page sera actualisée dans ' + _secondsLeft + ' seconde(s) pour charger les dernières mises à jour du ticket.';
-        }
-    }
-
-    function removeBanner() {
-        var banner = document.getElementById(BANNER_ID);
-        if (banner) {
-            banner.parentNode.removeChild(banner);
-        }
-    }
-
-    // ── Timer control ──────────────────────────────────────────────────
-
-    function postpone() {
-        _secondsLeft = REFRESH_INTERVAL;
-        removeBanner();
-        if (typeof glpi_toast_info === 'function') {
-            glpi_toast_info('Actualisation reportée', 'Prochaine vérification dans ' + REFRESH_INTERVAL + ' secondes.', { delay: 3000 });
-        }
-    }
-
-    function tick() {
+    function doPoll() {
         if (_paused) return;
 
-        _secondsLeft--;
+        $.ajax({
+            url: AJAX_URL,
+            type: 'GET',
+            dataType: 'json',
+            timeout: 8000,
+            data: {
+                'action':     'count_items',
+                'parenttype': PARENT_TYPE,
+                'items_id':   ITEMS_ID
+            },
+            success: function(data) {
+                if (_lastCount === null) {
+                    _lastCount = data.timeline_count;
+                    _lastMod   = data.last_mod;
+                    return;
+                }
 
-        if (_secondsLeft <= WARNING_SECONDS && _secondsLeft > 0) {
-            showBanner();
-            updateBannerText();
-        }
+                var changed = data.timeline_count > _lastCount || data.last_mod !== _lastMod;
 
-        if (_secondsLeft <= 0) {
-            removeBanner();
+                if (changed && !_notified) {
+                    _notified = true;
 
-            if (isUnsafe()) {
-                postpone();
-                return;
+                    if (typeof glpi_toast_info === 'function') {
+                        var $toast = glpi_toast_info(
+                            'Nouveau message reçu',
+                            '<span id="glpi-live-refresh-msg">Un nouvel élément a été ajouté à la conversation.</span><br><button id="glpi-live-refresh-btn" class="btn btn-sm btn-primary mt-2">Rafraîchir</button>',
+                            { delay: 0 }
+                        );
+
+                        $(document).off('click', '#glpi-live-refresh-btn').on('click', '#glpi-live-refresh-btn', function() {
+                            window.location.reload();
+                        });
+                    }
+                }
+
+                if (!changed) {
+                    _notified = false;
+                }
+
+                _lastCount = data.timeline_count;
+                _lastMod   = data.last_mod;
+            },
+            error: function() {
+                // Silently retry on next interval
             }
-
-            window.location.reload();
-        }
+        });
     }
 
-    function startTimer() {
-        stopTimer();
-        _secondsLeft = REFRESH_INTERVAL;
-        _timer = setInterval(tick, 1000);
+    function startPolling() {
+        if (_timer) return;
+        doPoll();
+        _timer = setInterval(doPoll, POLL_INTERVAL);
     }
 
-    function stopTimer() {
+    function stopPolling() {
         if (_timer) {
             clearInterval(_timer);
             _timer = null;
         }
     }
 
-    // ── Event listeners ────────────────────────────────────────────────
-
-    // Pause when tab is hidden, resume when visible
     document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
             _paused = true;
-            removeBanner();
+            stopPolling();
         } else {
             _paused = false;
-            _secondsLeft = REFRESH_INTERVAL;
+            _notified = false;
+            startPolling();
         }
     });
 
-    // Cleanup on page unload
     window.addEventListener('beforeunload', function() {
-        stopTimer();
-        removeBanner();
+        stopPolling();
     });
 
-    // ── Initialize ─────────────────────────────────────────────────────
-    startTimer();
+    startPolling();
 })();
 </script>
 {% endif %}
