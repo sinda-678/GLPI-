@@ -218,6 +218,8 @@ $(function() {
 <script type="text/javascript">
 (function() {
     var POLL_INTERVAL = 10000;
+    var TOAST_DELAY   = 4000;
+    var RELOAD_DELAY  = 4500;
     var AJAX_URL      = '{{ path("/ajax/timeline.php") }}';
     var PARENT_TYPE   = '{{ item.getType() }}';
     var ITEMS_ID      = {{ item.fields['id'] }};
@@ -225,7 +227,7 @@ $(function() {
     var _lastTimelineCount = null;
     var _lastMod           = null;
     var _pollTimer         = null;
-    var _isRefreshing      = false;
+    var _isReloading       = false;
     var _toastShown        = false;
 
     function isVisible() {
@@ -246,79 +248,8 @@ $(function() {
         }
     }
 
-    function startPolling() {
-        if (!_pollTimer) {
-            _pollTimer = setInterval(doPoll, POLL_INTERVAL);
-        }
-    }
-
-    function refreshTimeline() {
-        if (_isRefreshing) return;
-        _isRefreshing = true;
-        stopPolling();
-
-        var $timeline = $('.itil-timeline');
-        if ($timeline.length === 0) {
-            window.location.reload();
-            return;
-        }
-
-        var scrollPos = {
-            top: $timeline.scrollTop(),
-            page: $(window).scrollTop()
-        };
-
-        $.ajax({
-            url: AJAX_URL,
-            type: 'GET',
-            dataType: 'json',
-            timeout: 30000,
-            data: {
-                'action':     'fetch_timeline',
-                'parenttype': PARENT_TYPE,
-                'items_id':   ITEMS_ID
-            },
-            success: function(data) {
-                if (!data.html) {
-                    console.error('[LiveRefresh] No HTML in fetch_timeline response');
-                    _isRefreshing = false;
-                    startPolling();
-                    return;
-                }
-
-                var $newContent = $(data.html);
-
-                $timeline.replaceWith($newContent);
-
-                $(window).scrollTop(scrollPos.page);
-
-                if (data.timeline_count !== undefined) {
-                    _lastTimelineCount = data.timeline_count;
-                }
-                if (data.last_mod !== undefined) {
-                    _lastMod = data.last_mod;
-                }
-
-                glpi_toast_info(
-                    'Timeline mise à jour',
-                    'Nouveau contenu chargé.',
-                    { delay: 3000 }
-                );
-
-                _isRefreshing = false;
-                _toastShown = false;
-                startPolling();
-            },
-            error: function(xhr, status, error) {
-                console.error('[LiveRefresh] fetch_timeline error:', status, error);
-                _isRefreshing = false;
-                startPolling();
-            }
-        });
-    }
-
     function doPoll() {
-        if (_isRefreshing || !isVisible()) return;
+        if (_isReloading || !isVisible()) return;
 
         $.ajax({
             url: AJAX_URL,
@@ -337,45 +268,55 @@ $(function() {
                     return;
                 }
 
-                var countChanged = data.timeline_count > _lastTimelineCount;
-                var modChanged   = data.last_mod !== _lastMod;
-
-                if (countChanged || modChanged) {
-                    if (_toastShown) return;
-
-                    if (isUserTyping()) {
-                        glpi_toast_info(
-                            'Nouveau contenu disponible',
-                            'Un nouveau élément a été ajouté au ticket.',
-                            { delay: 8000 }
-                        );
-                        _toastShown = true;
-                        return;
-                    }
-
+                if (data.timeline_count > _lastTimelineCount || data.last_mod !== _lastMod) {
                     _lastTimelineCount = data.timeline_count;
                     _lastMod           = data.last_mod;
 
-                    refreshTimeline();
+                    if (_toastShown) return;
+
+                    if (isUserTyping()) {
+                        if (!_toastShown) {
+                            glpi_toast_info(
+                                'Nouveau contenu disponible',
+                                'Un nouveau élément a été ajouté au ticket.',
+                                { delay: 8000 }
+                            );
+                            _toastShown = true;
+                        }
+                        return;
+                    }
+
+                    _isReloading = true;
+                    stopPolling();
+
+                    glpi_toast_info(
+                        'Nouveau contenu disponible',
+                        'Actualisation en cours...',
+                        { delay: TOAST_DELAY }
+                    );
+
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, RELOAD_DELAY);
                 }
             },
-            error: function(xhr, status, error) {
-                console.error('[LiveRefresh] count_items error:', status, error);
+            error: function() {
+                // Silently retry on next interval
             }
         });
     }
 
     $(document).on('visibilitychange', function() {
-        if (isVisible() && !_pollTimer && !_isRefreshing) {
+        if (isVisible() && !_pollTimer && !_isReloading) {
             doPoll();
-            startPolling();
+            _pollTimer = setInterval(doPoll, POLL_INTERVAL);
         } else if (!isVisible() && _pollTimer) {
             stopPolling();
         }
     });
 
     doPoll();
-    startPolling();
+    _pollTimer = setInterval(doPoll, POLL_INTERVAL);
 })();
 </script>
 {% endif %}

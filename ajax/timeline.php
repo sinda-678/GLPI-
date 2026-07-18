@@ -232,40 +232,4 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         'last_mod'       => $parent->fields['date_mod'],
         'status'         => $parent->fields['status'],
     ]);
-} elseif (($_REQUEST['action'] ?? null) === 'fetch_timeline') {
-    header("Content-Type: application/json; charset=UTF-8");
-    header("Cache-Control: no-store, no-cache, must-revalidate");
-
-    if (!isset($_REQUEST['parenttype'], $_REQUEST['items_id'])) {
-        throw new BadRequestHttpException();
-    }
-
-    $parent = getItemForItemtype($_REQUEST['parenttype']);
-    if (!$parent instanceof CommonITILObject) {
-        throw new BadRequestHttpException();
-    }
-
-    $tickets_id = (int) $_REQUEST['items_id'];
-    if (!$parent->getFromDB($tickets_id) || !$parent->canViewItem()) {
-        throw new AccessDeniedHttpException();
-    }
-
-    $timeline           = $parent->getTimelineItems();
-    $timeline_itemtypes = $parent->getTimelineItemtypes();
-    $mention_options    = \Glpi\RichText\UserMention::getMentionOptions($parent);
-
-    $twig = TemplateRenderer::getInstance();
-    $html = $twig->render('components/itilobject/timeline/timeline.html.twig', [
-        'item'               => $parent,
-        'timeline'           => $timeline,
-        'timeline_itemtypes' => $timeline_itemtypes,
-        'mention_options'    => $mention_options,
-    ]);
-
-    echo json_encode([
-        'html'             => $html,
-        'timeline_count'   => count($timeline),
-        'last_mod'         => $parent->fields['date_mod'],
-        'status'           => $parent->fields['status'],
-    ]);
 }
