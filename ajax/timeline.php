@@ -145,4 +145,127 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         throw new AccessDeniedHttpException();
     }
     $twig->display("components/itilobject/timeline/{$template}.html.twig", $params);
+} elseif (($_REQUEST['action'] ?? null) === 'count_items') {
+    header("Content-Type: application/json; charset=UTF-8");
+    header("Cache-Control: no-store, no-cache, must-revalidate");
+
+    if (!isset($_REQUEST['parenttype'], $_REQUEST['items_id'])) {
+        throw new BadRequestHttpException();
+    }
+
+    $parent = getItemForItemtype($_REQUEST['parenttype']);
+    if (!$parent instanceof CommonITILObject) {
+        throw new BadRequestHttpException();
+    }
+
+    $tickets_id = (int) $_REQUEST['items_id'];
+    if (!$parent->getFromDB($tickets_id) || !$parent->canViewItem()) {
+        throw new AccessDeniedHttpException();
+    }
+
+    global $DB;
+
+    $count = 0;
+
+    // --- Followups (with private restriction) ---
+    $restrict_fup = [
+        'itemtype' => $parent::getType(),
+        'items_id' => $tickets_id,
+    ];
+    if (!Session::haveRight("followup", ITILFollowup::SEEPRIVATE)) {
+        $restrict_fup['OR'] = [
+            'is_private' => 0,
+            'users_id'   => Session::getCurrentInterface() === "central" ? (int) Session::getLoginUserID() : 0,
+        ];
+    }
+    $iterator = $DB->request([
+        'SELECT' => new QueryExpression('COUNT(*) AS cnt'),
+        'FROM'   => 'glpi_itilfollowups',
+        'WHERE'  => $restrict_fup,
+    ]);
+    $count += (int) $iterator->current()['cnt'];
+
+    // --- Tasks ---
+    $taskClass = $parent::getTaskClass();
+    $iterator = $DB->request([
+        'SELECT' => new QueryExpression('COUNT(*) AS cnt'),
+        'FROM'   => (new $taskClass())->getTable(),
+        'WHERE'  => [
+            $parent::getForeignKeyField() => $tickets_id,
+        ],
+    ]);
+    $count += (int) $iterator->current()['cnt'];
+
+    // --- Solutions ---
+    $iterator = $DB->request([
+        'SELECT' => new QueryExpression('COUNT(*) AS cnt'),
+        'FROM'   => 'glpi_itilsolutions',
+        'WHERE'  => [
+            'itemtype' => $parent::getType(),
+            'items_id' => $tickets_id,
+        ],
+    ]);
+    $count += (int) $iterator->current()['cnt'];
+
+    // --- Validations ---
+    $iterator = $DB->request([
+        'SELECT' => new QueryExpression('COUNT(*) AS cnt'),
+        'FROM'   => 'glpi_itilvalidations',
+        'WHERE'  => [
+            $parent::getForeignKeyField() => $tickets_id,
+        ],
+    ]);
+    $count += (int) $iterator->current()['cnt'];
+
+    // --- Reminders ---
+    $iterator = $DB->request([
+        'SELECT' => new QueryExpression('COUNT(*) AS cnt'),
+        'FROM'   => 'glpi_itilreminders',
+        'WHERE'  => [
+            $parent::getForeignKeyField() => $tickets_id,
+        ],
+    ]);
+    $count += (int) $iterator->current()['cnt'];
+
+    echo json_encode([
+        'timeline_count' => $count,
+        'last_mod'       => $parent->fields['date_mod'],
+        'status'         => $parent->fields['status'],
+    ]);
+} elseif (($_REQUEST['action'] ?? null) === 'fetch_timeline') {
+    header("Content-Type: application/json; charset=UTF-8");
+    header("Cache-Control: no-store, no-cache, must-revalidate");
+
+    if (!isset($_REQUEST['parenttype'], $_REQUEST['items_id'])) {
+        throw new BadRequestHttpException();
+    }
+
+    $parent = getItemForItemtype($_REQUEST['parenttype']);
+    if (!$parent instanceof CommonITILObject) {
+        throw new BadRequestHttpException();
+    }
+
+    $tickets_id = (int) $_REQUEST['items_id'];
+    if (!$parent->getFromDB($tickets_id) || !$parent->canViewItem()) {
+        throw new AccessDeniedHttpException();
+    }
+
+    $timeline           = $parent->getTimelineItems();
+    $timeline_itemtypes = $parent->getTimelineItemtypes();
+    $mention_options    = \Glpi\RichText\UserMention::getMentionOptions($parent);
+
+    $twig = TemplateRenderer::getInstance();
+    $html = $twig->render('components/itilobject/timeline/timeline.html.twig', [
+        'item'               => $parent,
+        'timeline'           => $timeline,
+        'timeline_itemtypes' => $timeline_itemtypes,
+        'mention_options'    => $mention_options,
+    ]);
+
+    echo json_encode([
+        'html'             => $html,
+        'timeline_count'   => count($timeline),
+        'last_mod'         => $parent->fields['date_mod'],
+        'status'           => $parent->fields['status'],
+    ]);
 }
