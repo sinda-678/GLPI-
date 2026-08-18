@@ -1,0 +1,241 @@
+{#
+ # =========================================================================
+ # LIVE TIMELINE — new messages appear without reloading the page
+ # =========================================================================
+ #
+ # Both parties (requester and technician) share this page, so this single
+ # block gives live delivery in both directions.
+ #
+ # A cheap `count` poll runs every 10s. When the count changes, the rendered
+ # entries are fetched once and only the missing ones are inserted into the
+ # existing timeline. Nothing is ever removed or replaced, so a reply being
+ # written, an open editor or a pending upload are never lost.
+ #
+ # Polling pauses while the tab is hidden and catches up on focus.
+ #
+ # Installed by bin/install-live-timeline.php — do not edit by hand.
+ # =========================================================================
+ #}
+{% if item is defined and not item.isNewItem() %}
+<style>
+    .itil-timeline .timeline-item.new-timeline-item .timeline-content {
+        animation: glpi-new-message-in 400ms ease-out;
+        box-shadow: 0 0 0 2px var(--tblr-primary, #206bc4);
+        transition: box-shadow 1s ease-out 3s;
+    }
+    @keyframes glpi-new-message-in {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .itil-timeline .timeline-item.new-timeline-item .timeline-content {
+            animation: none;
+        }
+    }
+</style>
+<script type="text/javascript">
+(function() {
+    var POLL_INTERVAL = 10000;
+    var ENDPOINT      = CFG_GLPI.root_doc + '/ajax/livetimeline.php';
+    var PARENT_TYPE   = '{{ item.getType()|e('js') }}';
+    var ITEMS_ID      = {{ item.fields['id'] }};
+
+    var _known_count = null;
+    var _timer       = null;
+    var _fetching    = false;
+
+    function timelineRoot() {
+        return document.querySelector('.itil-timeline');
+    }
+
+    function entryKey(node) {
+        return node.getAttribute('data-itemtype') + '_' + node.getAttribute('data-items-id');
+    }
+
+    /**
+     * Entries currently on screen. The main description carries the same data
+     * attributes but is not a timeline entry, hence the exclusion.
+     */
+    function displayedKeys() {
+        var keys = {};
+        var root = timelineRoot();
+        if (!root) {
+            return keys;
+        }
+        root.querySelectorAll('.timeline-item[data-items-id]:not(.ITILContent)').forEach(function(node) {
+            keys[entryKey(node)] = node;
+        });
+        return keys;
+    }
+
+    function isNearBottom() {
+        return (window.innerHeight + window.pageYOffset) >= (document.body.offsetHeight - 150);
+    }
+
+    /**
+     * Insert a fetched entry where it belongs, by anchoring it to a sibling
+     * already displayed. Keeps the right order for normal and reversed
+     * timelines alike, without having to know which one is in use.
+     */
+    function insertEntry(new_node, fetched, index, displayed) {
+        var root = timelineRoot();
+        var i;
+
+        for (i = index - 1; i >= 0; i--) {
+            var prev = displayed[entryKey(fetched[i])];
+            if (prev) {
+                prev.parentNode.insertBefore(new_node, prev.nextSibling);
+                return;
+            }
+        }
+        for (i = index + 1; i < fetched.length; i++) {
+            var next = displayed[entryKey(fetched[i])];
+            if (next) {
+                next.parentNode.insertBefore(new_node, next);
+                return;
+            }
+        }
+        var marker = root.querySelector('.timeline-item.tasks-title');
+        if (marker) {
+            root.insertBefore(new_node, marker);
+        } else {
+            root.appendChild(new_node);
+        }
+    }
+
+    function markRead() {
+        if (document.hidden) {
+            return;
+        }
+        $.ajax({
+            url: ENDPOINT,
+            type: 'POST',
+            dataType: 'json',
+            data: {action: 'mark_read', parenttype: PARENT_TYPE, items_id: ITEMS_ID}
+        }).done(function() {
+            $(document).trigger('glpi.unread.refresh');
+        });
+    }
+
+    function fetchEntries() {
+        if (_fetching) {
+            return;
+        }
+        _fetching = true;
+
+        $.ajax({
+            url: ENDPOINT,
+            type: 'GET',
+            dataType: 'html',
+            data: {action: 'entries', parenttype: PARENT_TYPE, items_id: ITEMS_ID}
+        }).done(function(html) {
+            var root = timelineRoot();
+            if (!root) {
+                return;
+            }
+
+            var holder = document.createElement('div');
+            holder.innerHTML = html;
+
+            var fetched = Array.prototype.slice.call(
+                holder.querySelectorAll('.timeline-item[data-items-id]:not(.ITILContent)')
+            );
+            var displayed = displayedKeys();
+            var added = [];
+
+            fetched.forEach(function(node, index) {
+                if (displayed[entryKey(node)]) {
+                    return; // already on screen, never touch it
+                }
+                insertEntry(node, fetched, index, displayed);
+                displayed[entryKey(node)] = node;
+                added.push(node);
+            });
+
+            if (added.length === 0) {
+                return;
+            }
+
+            var stick_to_bottom = isNearBottom();
+
+            added.forEach(function(node) {
+                node.classList.add('new-timeline-item');
+                setTimeout(function() {
+                    node.classList.remove('new-timeline-item');
+                }, 4000);
+            });
+
+            markRead();
+
+            if (stick_to_bottom) {
+                added[added.length - 1].scrollIntoView({behavior: 'smooth', block: 'nearest'});
+            } else if (typeof glpi_toast_info === 'function') {
+                glpi_toast_info(
+                    '{{ __('New message')|e('js') }}',
+                    added.length + ' ' + '{{ __('new message(s) received')|e('js') }}',
+                    {delay: 5000}
+                );
+            }
+        }).always(function() {
+            _fetching = false;
+        });
+    }
+
+    function poll() {
+        if (document.hidden) {
+            return;
+        }
+        $.ajax({
+            url: ENDPOINT,
+            type: 'GET',
+            dataType: 'json',
+            data: {action: 'count', parenttype: PARENT_TYPE, items_id: ITEMS_ID}
+        }).done(function(data) {
+            if (!data || typeof data.count === 'undefined') {
+                return;
+            }
+            if (_known_count === null) {
+                _known_count = data.count;
+                return;
+            }
+            if (data.count !== _known_count) {
+                _known_count = data.count;
+                fetchEntries();
+            }
+        });
+        // network errors are ignored on purpose: the next tick retries
+    }
+
+    function start() {
+        if (_timer === null) {
+            _timer = setInterval(poll, POLL_INTERVAL);
+        }
+    }
+
+    function stop() {
+        if (_timer !== null) {
+            clearInterval(_timer);
+            _timer = null;
+        }
+    }
+
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            stop();
+        } else {
+            start();
+            poll();
+            markRead();
+        }
+    });
+
+    window.addEventListener('beforeunload', stop);
+
+    $(function() {
+        _known_count = Object.keys(displayedKeys()).length;
+        start();
+        markRead();
+    });
+})();
+</script>
+{% endif %}
