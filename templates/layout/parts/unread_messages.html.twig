@@ -1,0 +1,160 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{#
+ # Unread messages counter.
+ #
+ # Shows how many replies were posted on the user's tickets since the last
+ # time they opened them, the way a messaging app does. The badge is hidden
+ # while there is nothing to read.
+ #}
+
+<div class="nav-item dropdown d-flex align-items-center" id="unread-messages-menu">
+    <a href="#" class="nav-link px-2 position-relative text-reset"
+       data-bs-toggle="dropdown" data-bs-auto-close="outside"
+       title="{{ __('Unread messages') }}"
+       aria-label="{{ __('Unread messages') }}">
+        <i class="ti ti-bell fs-2"></i>
+        <span class="badge bg-red text-white position-absolute top-0 end-0 d-none"
+              id="unread-messages-badge"
+              data-testid="unread-messages-badge">0</span>
+    </a>
+
+    <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow mt-1"
+         id="unread-messages-list" style="min-width: 20rem;">
+        <h6 class="dropdown-header">{{ __('Unread messages') }}</h6>
+        <div class="dropdown-item text-muted" id="unread-messages-empty">
+            {{ __('No unread message') }}
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var POLL_INTERVAL = 30000;
+    var ENDPOINT      = CFG_GLPI.root_doc + '/ajax/unreadmessages.php';
+    var TICKET_URL    = CFG_GLPI.root_doc + '/front/ticket.form.php?id=';
+
+    var _timer = null;
+
+    function render(summary) {
+        var badge = document.getElementById('unread-messages-badge');
+        var list  = document.getElementById('unread-messages-list');
+        var empty = document.getElementById('unread-messages-empty');
+        if (!badge || !list || !empty) {
+            return;
+        }
+
+        var total = summary.total || 0;
+
+        if (total > 0) {
+            badge.textContent = total > 99 ? '99+' : total;
+            badge.classList.remove('d-none');
+        } else {
+            badge.classList.add('d-none');
+        }
+
+        // Rebuild the list, keeping the header and the empty placeholder.
+        list.querySelectorAll('.unread-messages-entry').forEach(function(node) {
+            node.remove();
+        });
+
+        var items = summary.items || [];
+        empty.classList.toggle('d-none', items.length > 0);
+
+        items.forEach(function(entry) {
+            var link = document.createElement('a');
+            link.className = 'dropdown-item d-flex align-items-center unread-messages-entry';
+            link.href = TICKET_URL + encodeURIComponent(entry.items_id);
+
+            var label = document.createElement('span');
+            label.className = 'text-truncate me-2';
+            label.textContent = entry.name;   // textContent: never inject ticket titles as HTML
+
+            var count = document.createElement('span');
+            count.className = 'badge bg-red text-white ms-auto';
+            count.textContent = entry.count;
+
+            link.appendChild(label);
+            link.appendChild(count);
+            list.appendChild(link);
+        });
+    }
+
+    function poll() {
+        if (document.hidden) {
+            return;
+        }
+        $.ajax({
+            url: ENDPOINT,
+            type: 'GET',
+            dataType: 'json',
+            data: {action: 'summary'}
+        }).done(function(summary) {
+            if (summary && typeof summary.total !== 'undefined') {
+                render(summary);
+            }
+        });
+        // network errors are ignored on purpose: the next tick will retry
+    }
+
+    function start() {
+        if (_timer === null) {
+            _timer = setInterval(poll, POLL_INTERVAL);
+        }
+    }
+
+    function stop() {
+        if (_timer !== null) {
+            clearInterval(_timer);
+            _timer = null;
+        }
+    }
+
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            stop();
+        } else {
+            start();
+            poll();
+        }
+    });
+
+    // Let the ticket page refresh the counter as soon as it marks a ticket read.
+    $(document).on('glpi.unread.refresh', poll);
+
+    $(function() {
+        poll();
+        start();
+    });
+})();
+</script>

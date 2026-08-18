@@ -370,6 +370,9 @@ $(function() {
             // Let GLPI re-apply its behaviours on the injected markup.
             $(document).trigger('glpi.timeline.updated', [added]);
 
+            // The user is looking at the ticket: these are read straight away.
+            markRead();
+
             if (stick_to_bottom) {
                 added[added.length - 1].scrollIntoView({behavior: 'smooth', block: 'nearest'});
             } else if (typeof glpi_toast_info === 'function') {
@@ -383,6 +386,29 @@ $(function() {
             _fetching = false;
         });
     }
+
+    /**
+     * Tell the server the user has seen everything displayed here, then let
+     * the header counter refresh itself.
+     */
+    function markRead() {
+        if (document.hidden) {
+            return;
+        }
+        $.ajax({
+            url: CFG_GLPI.root_doc + '/ajax/unreadmessages.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                action: 'mark_read',
+                itemtype: PARENT_TYPE,
+                items_id: ITEMS_ID
+            }
+        }).done(function() {
+            $(document).trigger('glpi.unread.refresh');
+        });
+    }
+
 
     function poll() {
         if (document.hidden) {
@@ -432,6 +458,7 @@ $(function() {
         } else {
             start();
             poll(); // catch up immediately when coming back
+            markRead();
         }
     });
 
@@ -440,6 +467,7 @@ $(function() {
     $(function() {
         _known_count = Object.keys(displayedKeys()).length;
         start();
+        markRead();
     });
 })();
 </script>
