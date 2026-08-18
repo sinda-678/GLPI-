@@ -170,9 +170,10 @@
             if (stick_to_bottom) {
                 added[added.length - 1].scrollIntoView({behavior: 'smooth', block: 'nearest'});
             } else if (typeof glpi_toast_info === 'function') {
+                // Signature is (message, caption): body first, title second.
                 glpi_toast_info(
-                    '{{ __('New message')|e('js') }}',
                     added.length + ' ' + '{{ __('new message(s) received')|e('js') }}',
+                    '{{ __('New message')|e('js') }}',
                     {delay: 5000}
                 );
             }

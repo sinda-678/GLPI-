@@ -1,0 +1,171 @@
+{#
+ # Global new-message notifier.
+ #
+ # Included from the page footer, so it runs on every GLPI page: a reply is
+ # announced whether the user is reading the ticket or somewhere else entirely.
+ #
+ # State lives in localStorage, not in the database: no table, no migration.
+ #}
+
+<script type="text/javascript">
+(function() {
+    // The footer is rendered once, but guard anyway: a duplicated include
+    // would otherwise start a second poller.
+    if (window.__glpiLiveNotifier) {
+        return;
+    }
+    window.__glpiLiveNotifier = true;
+
+    var POLL_INTERVAL = 10000;
+    var ENDPOINT      = CFG_GLPI.root_doc + '/ajax/livetimeline.php';
+    var TICKET_URL    = CFG_GLPI.root_doc + '/front/ticket.form.php?id=';
+    var STORAGE_KEY   = 'glpi_live_notifier_last_id';
+
+    var _timer = null;
+
+    function lastNotifiedId() {
+        try {
+            return parseInt(window.localStorage.getItem(STORAGE_KEY), 10) || 0;
+        } catch (e) {
+            return 0;   // private browsing, storage disabled: degrade quietly
+        }
+    }
+
+    function rememberId(id) {
+        try {
+            window.localStorage.setItem(STORAGE_KEY, String(id));
+        } catch (e) {
+            // nothing to do: without storage the page simply re-notifies later
+        }
+    }
+
+    /**
+     * GLPI builds toasts by string interpolation without escaping, so anything
+     * coming from the database has to be escaped here or a ticket title could
+     * inject markup into the reader's page.
+     */
+    function escape(text) {
+        if (typeof _ !== 'undefined' && typeof _.escape === 'function') {
+            return _.escape(text);
+        }
+        var node = document.createElement('div');
+        node.textContent = text;
+        return node.innerHTML;
+    }
+
+    function notifyDesktop(message) {
+        if (typeof Notification === 'undefined' || Notification.permission !== 'granted') {
+            return;
+        }
+        try {
+            var notification = new Notification(
+                '{{ __('New message')|e('js') }}',
+                {body: message.ticket, tag: 'glpi-ticket-' + message.tickets_id}
+            );
+            notification.onclick = function() {
+                window.focus();
+                window.location.href = TICKET_URL + encodeURIComponent(message.tickets_id);
+            };
+        } catch (e) {
+            // Some browsers throw when constructing notifications outside a
+            // service worker: the in-app toast already covered the user.
+        }
+    }
+
+    function notify(message) {
+        var url  = TICKET_URL + encodeURIComponent(message.tickets_id);
+        var body = '<a href="' + escape(url) + '" class="text-white text-decoration-underline">'
+                 + escape(message.ticket)
+                 + '</a>';
+
+        // Signature is (message, caption): body first, title second.
+        glpi_toast_info(body, '{{ __('New message')|e('js') }}', {delay: 8000});
+
+        notifyDesktop(message);
+    }
+
+    function poll() {
+        if (document.hidden) {
+            return;
+        }
+
+        $.ajax({
+            url: ENDPOINT,
+            type: 'GET',
+            dataType: 'json',
+            data: {action: 'notifications'}
+        }).done(function(data) {
+            if (!data || !Array.isArray(data.messages) || data.messages.length === 0) {
+                return;
+            }
+
+            var messages = data.messages;
+            var highest  = messages[0].id;   // server sorts by id desc
+            var known    = lastNotifiedId();
+
+            // First run in this browser: adopt the current state silently,
+            // otherwise the user would be flooded with old messages.
+            if (known === 0) {
+                rememberId(highest);
+                return;
+            }
+
+            if (highest <= known) {
+                return;
+            }
+
+            // Claim the messages before showing them, so other open tabs do
+            // not announce the same replies.
+            rememberId(highest);
+
+            messages
+                .filter(function(message) {
+                    return message.id > known;
+                })
+                .reverse()   // oldest first, so the newest toast ends up on top
+                .forEach(notify);
+        });
+        // network errors are ignored on purpose: the next tick will retry
+    }
+
+    function start() {
+        if (_timer === null) {
+            _timer = setInterval(poll, POLL_INTERVAL);
+        }
+    }
+
+    function stop() {
+        if (_timer !== null) {
+            clearInterval(_timer);
+            _timer = null;
+        }
+    }
+
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            stop();
+        } else {
+            start();
+            poll();   // catch up on what arrived while the tab was hidden
+        }
+    });
+
+    // Browsers reject permission requests that are not tied to a user gesture,
+    // so ask on the first click rather than on load.
+    if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+        document.addEventListener('click', function askOnce() {
+            document.removeEventListener('click', askOnce);
+            try {
+                Notification.requestPermission();
+            } catch (e) {
+                // ignored: the in-app toast works without any permission
+            }
+        }, {once: true});
+    }
+
+    $(function() {
+        poll();
+        start();
+    });
+})();
+</script>

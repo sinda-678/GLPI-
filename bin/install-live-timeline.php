@@ -39,6 +39,11 @@ $backup_dir = $root . '/files/_live_timeline_backup';
 $INCLUDE_SCRIPT  = "{{ include('components/itilobject/live_timeline.html.twig') }}";
 $INCLUDE_ENTRIES = "{{ include('components/itilobject/timeline/timeline_entries.html.twig') }}";
 
+// Global notifier: announces new replies on every page, not just the ticket.
+$footer           = $root . '/templates/layout/parts/page_footer.html.twig';
+$notifier_tpl     = $root . '/templates/layout/parts/live_notifier.html.twig';
+$INCLUDE_NOTIFIER = "{{ include('layout/parts/live_notifier.html.twig') }}";
+
 $mode = 'install';
 foreach ($argv as $arg) {
     if ($arg === '--uninstall') {
@@ -65,7 +70,7 @@ function eol(string $content): string
 // Sanity checks
 // ---------------------------------------------------------------------------
 
-foreach ([$timeline, $layout] as $file) {
+foreach ([$timeline, $layout, $footer] as $file) {
     if (!is_file($file)) {
         fail("not found: {$file}\nIs this script inside a GLPI root directory?");
     }
@@ -76,14 +81,22 @@ foreach ([$timeline, $layout] as $file) {
 
 $layout_content   = file_get_contents($layout);
 $timeline_content = file_get_contents($timeline);
-$installed        = str_contains($layout_content, $INCLUDE_SCRIPT)
-                 && str_contains($timeline_content, $INCLUDE_ENTRIES);
+$footer_content   = file_get_contents($footer);
+$live_installed     = str_contains($layout_content, $INCLUDE_SCRIPT)
+                   && str_contains($timeline_content, $INCLUDE_ENTRIES);
+$notifier_installed = str_contains($footer_content, $INCLUDE_NOTIFIER);
+$installed          = $live_installed && $notifier_installed;
 
 if ($mode === 'check') {
     echo "GLPI root : {$root}\n";
-    echo "Status    : " . ($installed ? "INSTALLED" : "not installed") . "\n";
+    echo "Live msgs : " . ($live_installed ? "INSTALLED" : "not installed") . "
+";
+    echo "Notifier  : " . ($notifier_installed ? "INSTALLED" : "not installed") . "
+";
     echo "Endpoint  : " . (is_file($endpoint) ? "present" : "MISSING (ajax/livetimeline.php)") . "\n";
     echo "Script    : " . (is_file($script_tpl) ? "present" : "MISSING (live_timeline.html.twig)") . "\n";
+    echo "Notif tpl : " . (is_file($notifier_tpl) ? "present" : "MISSING (live_notifier.html.twig)") . "
+";
     echo "Partial   : " . (is_file($entries) ? "present" : "not generated yet") . "\n";
     echo "Backups   : " . (is_dir($backup_dir) ? $backup_dir : "none") . "\n";
     exit(0);
@@ -99,7 +112,12 @@ if ($mode === 'uninstall') {
     }
 
     $restored = 0;
-    foreach (['timeline.html.twig' => $timeline, 'layout.html.twig' => $layout] as $name => $target) {
+    $restorable = [
+        'timeline.html.twig'    => $timeline,
+        'layout.html.twig'      => $layout,
+        'page_footer.html.twig' => $footer,
+    ];
+    foreach ($restorable as $name => $target) {
         $saved = $backup_dir . '/' . $name;
         if (!is_file($saved)) {
             echo "  no backup for {$name}, left untouched\n";
@@ -152,7 +170,17 @@ if (!is_file($endpoint)) {
 if (!is_file($script_tpl)) {
     fail("missing templates/components/itilobject/live_timeline.html.twig — copy it first.");
 }
+if (!is_file($notifier_tpl)) {
+    fail("missing templates/layout/parts/live_notifier.html.twig — copy it first.");
+}
 
+// The timeline half may already be in place (earlier version of this
+// installer). Re-running must then only add the notifier: the loop it looks
+// for below has already been replaced by an include.
+if ($live_installed) {
+    echo "Live messages already installed, leaving templates untouched
+";
+} else {
 // --- Locate the entries loop, by pattern -----------------------------------
 
 if (!preg_match('/\{%-?\s*for\s+entry\s+in\s+timeline\s*-?%\}/', $timeline_content, $m, PREG_OFFSET_CAPTURE)) {
@@ -219,8 +247,18 @@ $block = substr($timeline_content, $start, $end_after - $start);
 if (!is_dir($backup_dir) && !mkdir($backup_dir, 0o755, true) && !is_dir($backup_dir)) {
     fail("could not create backup directory {$backup_dir}");
 }
-copy($timeline, $backup_dir . '/timeline.html.twig');
-copy($layout, $backup_dir . '/layout.html.twig');
+// Never overwrite an existing backup: on a second run the files on disk are
+// already patched, and archiving those would destroy any way back.
+foreach ([
+    'timeline.html.twig'    => $timeline,
+    'layout.html.twig'      => $layout,
+    'page_footer.html.twig' => $footer,
+] as $name => $source) {
+    $saved = $backup_dir . '/' . $name;
+    if (!is_file($saved)) {
+        copy($source, $saved);
+    }
+}
 echo "Backed up originals to files/_live_timeline_backup/\n";
 
 // --- Write the extracted partial -------------------------------------------
@@ -260,6 +298,30 @@ file_put_contents(
     rtrim($layout_content, "\r\n") . $layout_nl . $layout_nl . $INCLUDE_SCRIPT . $layout_nl
 );
 echo "Patched layout.html.twig (script included)\n";
+}
+
+// --- Patch page_footer.html.twig -------------------------------------------
+
+// The footer is rendered once per page, after jQuery and the toast helpers
+// are loaded, which makes it the only safe place for a global poller.
+if ($notifier_installed) {
+    echo "page_footer.html.twig already includes the notifier, left as is\n";
+} else {
+    $footer_nl = eol($footer_content);
+    $body_end  = strripos($footer_content, '</body>');
+
+    if ($body_end === false) {
+        fail('could not find </body> in page_footer.html.twig; refusing to guess.');
+    }
+
+    file_put_contents(
+        $footer,
+        substr($footer_content, 0, $body_end)
+        . $INCLUDE_NOTIFIER . $footer_nl
+        . substr($footer_content, $body_end)
+    );
+    echo "Patched page_footer.html.twig (global notifier included)\n";
+}
 
 echo "\nDone.\n";
 echo "\nNext steps:\n";

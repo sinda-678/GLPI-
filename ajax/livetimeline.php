@@ -7,9 +7,13 @@
  * behaviour without touching any core PHP file, so it survives GLPI updates
  * and can be dropped into any GLPI 11.x instance.
  *
- *   ?action=count    -> {"count": N}          cheap polling
- *   ?action=entries  -> rendered timeline entries (HTML)
- *   ?action=mark_read (POST) -> {"success": true}   optional, unread counter
+ * Ticket-scoped actions (need parenttype + items_id):
+ *   ?action=count         -> {"count": N}                     cheap polling
+ *   ?action=entries       -> rendered timeline entries (HTML)
+ *   ?action=mark_read     -> {"success": true}                POST, unread counter
+ *
+ * Global action (no ticket needed):
+ *   ?action=notifications -> {"messages": [...]}   recent replies on my tickets
  */
 
 use Glpi\Application\View\TemplateRenderer;
@@ -29,9 +33,91 @@ if (Session::getLoginUserID() === false) {
 }
 
 $action = $_REQUEST['action'] ?? null;
-if (!in_array($action, ['count', 'entries', 'mark_read'], true)) {
+if (!in_array($action, ['count', 'entries', 'mark_read', 'notifications'], true)) {
     $fail(400);
 }
+
+// ---------------------------------------------------------------------------
+// Global action: recent replies across every ticket the user takes part in.
+// ---------------------------------------------------------------------------
+
+if ($action === 'notifications') {
+    /** @var DBmysql $DB */
+    global $DB;
+
+    Html::header_nocache();
+    header('Content-Type: application/json; charset=UTF-8');
+
+    $users_id = (int) Session::getLoginUserID();
+    $messages = [];
+
+    // Entities are mandatory: without them the query would span the whole
+    // instance, so an empty list means "nothing to report" rather than "all".
+    $entities = array_map('intval', $_SESSION['glpiactiveentities'] ?? []);
+
+    if ($entities !== []) {
+        $entities_in = implode(',', $entities);
+
+        $actor = "t.`id` IN (SELECT `tickets_id` FROM `glpi_tickets_users` WHERE `users_id` = {$users_id})";
+        $groups = array_map('intval', $_SESSION['glpigroups'] ?? []);
+        if ($groups !== []) {
+            $groups_in = implode(',', $groups);
+            $actor .= " OR t.`id` IN (SELECT `tickets_id` FROM `glpi_groups_tickets` WHERE `groups_id` IN ({$groups_in}))";
+        }
+
+        // Private followups stay invisible to users who may not read them.
+        $private = Session::haveRight('followup', ITILFollowup::SEEPRIVATE)
+            ? ''
+            : ' AND f.`is_private` = 0';
+
+        $closed = array_map('intval', Ticket::getClosedStatusArray());
+        $closed_clause = $closed !== []
+            ? ' AND t.`status` NOT IN (' . implode(',', $closed) . ')'
+            : '';
+
+        $query = "
+            SELECT f.`id`       AS id,
+                   f.`items_id` AS tickets_id,
+                   t.`name`     AS ticket
+            FROM `glpi_itilfollowups` AS f
+            INNER JOIN `glpi_tickets` AS t
+                    ON t.`id` = f.`items_id`
+                   AND t.`is_deleted` = 0
+            WHERE f.`itemtype` = 'Ticket'
+              AND f.`users_id` <> {$users_id}
+              {$private}
+              AND t.`entities_id` IN ({$entities_in})
+              {$closed_clause}
+              AND ({$actor})
+            ORDER BY f.`id` DESC
+            LIMIT 10
+        ";
+
+        try {
+            $result = $DB->doQuery($query);
+            while ($result instanceof mysqli_result && ($row = $result->fetch_assoc())) {
+                $messages[] = [
+                    'id'         => (int) $row['id'],
+                    'tickets_id' => (int) $row['tickets_id'],
+                    // Deliberately no author name: entities may anonymise
+                    // support agents, and the ticket title is context enough.
+                    'ticket'     => (string) $row['ticket'],
+                ];
+            }
+        } catch (Throwable $e) {
+            // A notification that fails must never break the page that asked
+            // for it: every GLPI page calls this.
+            $messages = [];
+        }
+    }
+
+    echo json_encode(['messages' => $messages]);
+    return;
+}
+
+// ---------------------------------------------------------------------------
+// Ticket-scoped actions.
+// ---------------------------------------------------------------------------
 
 if (!isset($_REQUEST['parenttype'], $_REQUEST['items_id'])) {
     $fail(400);
