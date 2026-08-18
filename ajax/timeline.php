@@ -145,8 +145,11 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         throw new AccessDeniedHttpException();
     }
     $twig->display("components/itilobject/timeline/{$template}.html.twig", $params);
-} elseif (($_REQUEST['action'] ?? null) === 'count_items') {
-    header("Content-Type: application/json; charset=UTF-8");
+} elseif (in_array($_REQUEST['action'] ?? null, ['count_items', 'get_entries'], true)) {
+    // Live timeline updates.
+    //  - `count_items`  : cheap polling endpoint, returns the current number of timeline entries.
+    //  - `get_entries`  : returns the rendered timeline entries, so the client can append the
+    //                     ones it does not display yet without reloading the whole page.
     Html::header_nocache();
 
     if (!isset($_REQUEST['parenttype'], $_REQUEST['items_id'])) {
@@ -158,13 +161,30 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         throw new BadRequestHttpException();
     }
 
-    $tickets_id = (int) $_REQUEST['items_id'];
-    if (!$parent->getFromDB($tickets_id) || !$parent->canViewItem()) {
+    $items_id = (int) $_REQUEST['items_id'];
+    if (!$parent->getFromDB($items_id) || !$parent->canViewItem()) {
         throw new AccessDeniedHttpException();
     }
 
     $timeline = $parent->getTimelineItems(['check_view_rights' => true]);
-    echo json_encode([
-        'count' => count($timeline),
-    ]);
+
+    if ($_REQUEST['action'] === 'count_items') {
+        header("Content-Type: application/json; charset=UTF-8");
+        echo json_encode([
+            'count' => count($timeline),
+        ]);
+        return;
+    }
+
+    // Reuse the exact same rendering as a regular page load.
+    header("Content-Type: text/html; charset=UTF-8");
+    TemplateRenderer::getInstance()->display(
+        'components/itilobject/timeline/timeline_entries.html.twig',
+        [
+            'item'               => $parent,
+            'timeline'           => $timeline,
+            'timeline_itemtypes' => $parent->getTimelineItemtypes(),
+            'mention_options'    => UserMention::getMentionOptions($parent),
+        ]
+    );
 }
