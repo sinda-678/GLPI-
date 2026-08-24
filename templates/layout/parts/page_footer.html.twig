@@ -66,5 +66,9 @@
             debug_info: debug_info,
         }, with_context = false) }}
     {% endif %}
+
+{# Announces new messages and new tickets on every page. Included here because
+ # the footer runs after jQuery and the toast helpers are loaded. #}
+{{ include('layout/parts/live_notifier.html.twig') }}
 </body>
 </html>

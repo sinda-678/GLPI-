@@ -137,7 +137,7 @@ final class UnreadMessages
      * useful scope (a user cares about "his" tickets) and the cheap one: it
      * avoids walking the whole ticket table.
      *
-     * @return array{total:int, items:array<int, array{items_id:int, itemtype:string, name:string, count:int, last_date:string}>}
+     * @return array{total:int, items:array<int, array{items_id:int, itemtype:string, name:string, count:int, first_unread_id:int, last_date:string}>}
      */
     public static function getSummary(?int $users_id = null): array
     {
@@ -206,6 +206,7 @@ final class UnreadMessages
             SELECT t.`id`                  AS items_id,
                    t.`name`                AS name,
                    COUNT(f.`id`)           AS unread_count,
+                   MIN(f.`id`)             AS first_unread_id,
                    MAX(f.`date_creation`)  AS last_date
             {$from_where}
             GROUP BY t.`id`, t.`name`
@@ -231,6 +232,9 @@ final class UnreadMessages
                     'items_id'  => (int) $row['items_id'],
                     'name'      => (string) $row['name'],
                     'count'     => (int) $row['unread_count'],
+                    // Lets the dropdown link straight to where reading
+                    // stopped, instead of dropping the user at the top.
+                    'first_unread_id' => (int) $row['first_unread_id'],
                     'last_date' => (string) $row['last_date'],
                 ];
             }

@@ -31,18 +31,22 @@
  #}
 
 {#
- # Unread messages counter.
+ # Notification counter.
  #
- # Shows how many replies were posted on the user's tickets since the last
- # time they opened them, the way a messaging app does. The badge is hidden
- # while there is nothing to read.
+ # Shows what is waiting for the user, the way a messaging app does: replies
+ # posted on their tickets since they last opened them, and — for technicians —
+ # tickets that arrived in the queue and nobody has opened yet. The two are
+ # listed apart, with their own icon and colour, so a glance is enough to tell
+ # "someone answered you" from "work came in".
+ #
+ # The badge is hidden while there is nothing to look at.
  #}
 
 <div class="nav-item dropdown d-flex align-items-center" id="unread-messages-menu">
     <a href="#" class="nav-link px-2 position-relative text-reset"
        data-bs-toggle="dropdown" data-bs-auto-close="outside"
-       title="{{ __('Unread messages') }}"
-       aria-label="{{ __('Unread messages') }}">
+       title="{{ _n('Notification', 'Notifications', 2) }}"
+       aria-label="{{ _n('Notification', 'Notifications', 2) }}">
         <i class="ti ti-bell fs-2"></i>
         <span class="badge bg-red text-white position-absolute top-0 end-0 d-none"
               id="unread-messages-badge"
@@ -51,9 +55,24 @@
 
     <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow mt-1"
          id="unread-messages-list" style="min-width: 20rem;">
-        <h6 class="dropdown-header">{{ __('Unread messages') }}</h6>
+
         <div class="dropdown-item text-muted" id="unread-messages-empty">
-            {{ __('No unread message') }}
+            {{ __('Nothing new') }}
+        </div>
+
+        <div class="d-none" id="unread-messages-section">
+            <h6 class="dropdown-header d-flex align-items-center">
+                <i class="ti ti-message-circle text-blue me-2"></i>{{ __('Unread messages') }}
+            </h6>
+            <div id="unread-messages-entries"></div>
+        </div>
+
+        <div class="d-none" id="new-tickets-section">
+            <div class="dropdown-divider d-none" id="new-tickets-divider"></div>
+            <h6 class="dropdown-header d-flex align-items-center">
+                <i class="ti ti-ticket text-green me-2"></i>{{ __('New tickets') }}
+            </h6>
+            <div id="new-tickets-entries"></div>
         </div>
     </div>
 </div>
@@ -64,13 +83,72 @@
     var ENDPOINT      = CFG_GLPI.root_doc + '/ajax/unreadmessages.php';
     var TICKET_URL    = CFG_GLPI.root_doc + '/front/ticket.form.php?id=';
 
+    // Timeline entries carry id="ITILFollowup_<id>", so the dropdown can drop
+    // the user on the first message they have not read yet.
+    var ANCHOR_PREFIX = 'ITILFollowup_';
+
     var _timer = null;
+
+    /**
+     * Fill one section of the dropdown.
+     *
+     * @param {string}  entries_id  container receiving the links
+     * @param {string}  section_id  wrapper shown only when there is something
+     * @param {Array}   items       entries returned by the server
+     * @param {string}  icon        Tabler icon class marking the kind
+     * @param {boolean} with_count  show the number of messages per ticket
+     * @param {string}  [anchor]    prefix linking to the first unread entry
+     * @return {boolean} whether the section has anything in it
+     */
+    function renderSection(entries_id, section_id, items, icon, with_count, anchor) {
+        var entries = document.getElementById(entries_id);
+        var section = document.getElementById(section_id);
+        if (!entries || !section) {
+            return false;
+        }
+
+        entries.innerHTML = '';
+        items = items || [];
+
+        items.forEach(function(entry) {
+            var link = document.createElement('a');
+            link.className = 'dropdown-item d-flex align-items-center';
+            link.href = TICKET_URL + encodeURIComponent(entry.items_id);
+
+            // Resume where reading stopped rather than at the top of a long
+            // ticket. Absent for new tickets: there is no message to aim at.
+            if (anchor && entry.first_unread_id) {
+                link.href += '#' + anchor + encodeURIComponent(entry.first_unread_id);
+            }
+
+            var mark = document.createElement('i');
+            mark.className = 'ti ' + icon + ' me-2 text-muted';
+            link.appendChild(mark);
+
+            var label = document.createElement('span');
+            label.className = 'text-truncate me-2';
+            label.textContent = entry.name;   // textContent: never inject ticket titles as HTML
+            link.appendChild(label);
+
+            if (with_count) {
+                var count = document.createElement('span');
+                count.className = 'badge bg-red text-white ms-auto';
+                count.textContent = entry.count;
+                link.appendChild(count);
+            }
+
+            entries.appendChild(link);
+        });
+
+        section.classList.toggle('d-none', items.length === 0);
+
+        return items.length > 0;
+    }
 
     function render(summary) {
         var badge = document.getElementById('unread-messages-badge');
-        var list  = document.getElementById('unread-messages-list');
         var empty = document.getElementById('unread-messages-empty');
-        if (!badge || !list || !empty) {
+        if (!badge || !empty) {
             return;
         }
 
@@ -83,31 +161,27 @@
             badge.classList.add('d-none');
         }
 
-        // Rebuild the list, keeping the header and the empty placeholder.
-        list.querySelectorAll('.unread-messages-entry').forEach(function(node) {
-            node.remove();
-        });
+        var messages = summary.messages || {};
+        var tickets  = summary.tickets  || {};
 
-        var items = summary.items || [];
-        empty.classList.toggle('d-none', items.length > 0);
+        // Messages carry a per-ticket count ("3 replies waiting"); a new ticket
+        // is one single thing, so a "1" next to it would be noise.
+        var has_messages = renderSection(
+            'unread-messages-entries', 'unread-messages-section',
+            messages.items, 'ti-message-circle', true, ANCHOR_PREFIX
+        );
+        var has_tickets = renderSection(
+            'new-tickets-entries', 'new-tickets-section',
+            tickets.items, 'ti-ticket', false, null
+        );
 
-        items.forEach(function(entry) {
-            var link = document.createElement('a');
-            link.className = 'dropdown-item d-flex align-items-center unread-messages-entry';
-            link.href = TICKET_URL + encodeURIComponent(entry.items_id);
+        // The divider only makes sense between two populated sections.
+        var divider = document.getElementById('new-tickets-divider');
+        if (divider) {
+            divider.classList.toggle('d-none', !(has_messages && has_tickets));
+        }
 
-            var label = document.createElement('span');
-            label.className = 'text-truncate me-2';
-            label.textContent = entry.name;   // textContent: never inject ticket titles as HTML
-
-            var count = document.createElement('span');
-            count.className = 'badge bg-red text-white ms-auto';
-            count.textContent = entry.count;
-
-            link.appendChild(label);
-            link.appendChild(count);
-            list.appendChild(link);
-        });
+        empty.classList.toggle('d-none', has_messages || has_tickets);
     }
 
     function poll() {
@@ -149,7 +223,8 @@
         }
     });
 
-    // Let the ticket page refresh the counter as soon as it marks a ticket read.
+    // Let the ticket page and the global notifier refresh the counter as soon
+    // as they know something changed.
     $(document).on('glpi.unread.refresh', poll);
 
     $(function() {

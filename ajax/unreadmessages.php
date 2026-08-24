@@ -35,6 +35,7 @@
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Timeline\NewTickets;
 use Glpi\Timeline\UnreadMessages;
 
 use function Safe\json_encode;
@@ -49,8 +50,17 @@ if (Session::getLoginUserID() === false) {
 $action = $_REQUEST['action'] ?? null;
 
 if ($action === 'summary') {
-    // Unread messages of the current user, for the header counter.
-    echo json_encode(UnreadMessages::getSummary());
+    // What the header counter has to show, split by kind so the dropdown can
+    // tell "somebody replied" from "a ticket arrived". `total` is what the
+    // badge displays, and is the sum of both.
+    $messages = UnreadMessages::getSummary();
+    $tickets  = NewTickets::getSummary();
+
+    echo json_encode([
+        'total'    => $messages['total'] + $tickets['total'],
+        'messages' => $messages,
+        'tickets'  => $tickets,
+    ]);
     return;
 }
 

@@ -1309,3 +1309,11 @@
   .\vendor\symfony\console\Application.php:175       Symfony\Component\Console\Application->doRun()
   .\bin\console:144                                  Symfony\Component\Console\Application->run()
 
+[2026-08-20 15:26:04] glpi.CRITICAL:   *** Uncaught Error: Call to a member function request() on null
+  Backtrace :
+  .\src\Config.php:1274                              
+  .\src\Glpi\Timeline\UnreadMessages.php:82          Config::getConfigurationValues()
+  .\src\Glpi\Timeline\NewTickets.php:160             Glpi\Timeline\UnreadMessages::getBaselineDate()
+  :                                                  Glpi\Timeline\NewTickets::buildQuery()
+  ...6-9f36-45e6ab645634\scratchpad\sql_check.php:38 ReflectionMethod->invoke()
+

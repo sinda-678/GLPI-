@@ -40,6 +40,12 @@
     var PARENT_TYPE   = '{{ item.getType()|e('js') }}';
     var ITEMS_ID      = {{ item.fields['id'] }};
 
+    // Lets the global notifier know which ticket is on screen, so a reply
+    // arriving here is not announced twice and does not beep twice.
+    if (PARENT_TYPE === 'Ticket') {
+        window.__glpiOpenTicketId = ITEMS_ID;
+    }
+
     var _known_count = null;
     var _timer       = null;
     var _fetching    = false;
@@ -103,6 +109,36 @@
         }
     }
 
+    /** Highlight one entry, the way a freshly arrived message is highlighted. */
+    function flash(node) {
+        node.classList.add('new-timeline-item');
+        setTimeout(function() {
+            node.classList.remove('new-timeline-item');
+        }, 4000);
+    }
+
+    /**
+     * Bring the message a notification pointed at into view.
+     *
+     * The browser does jump to the anchor on its own, but the sticky header
+     * hides the target and nothing says which message was meant. Listening
+     * to hashchange too covers clicking a notification while already here.
+     */
+    function revealFromHash() {
+        var id = window.location.hash.replace(/^#/, '');
+        if (!id) {
+            return;
+        }
+
+        var node = document.getElementById(id);
+        if (!node || !node.classList.contains('timeline-item')) {
+            return;   // some other anchor on the page: not ours to handle
+        }
+
+        node.scrollIntoView({behavior: 'smooth', block: 'center'});
+        flash(node);
+    }
+
     function markRead() {
         if (document.hidden) {
             return;
@@ -158,12 +194,12 @@
 
             var stick_to_bottom = isNearBottom();
 
-            added.forEach(function(node) {
-                node.classList.add('new-timeline-item');
-                setTimeout(function() {
-                    node.classList.remove('new-timeline-item');
-                }, 4000);
-            });
+            added.forEach(flash);
+
+            // The LiveChat proper: somebody replied while we were reading.
+            if (typeof window.glpiPlayNotificationSound === 'function') {
+                window.glpiPlayNotificationSound('sound_a');
+            }
 
             markRead();
 
@@ -231,11 +267,13 @@
     });
 
     window.addEventListener('beforeunload', stop);
+    window.addEventListener('hashchange', revealFromHash);
 
     $(function() {
         _known_count = Object.keys(displayedKeys()).length;
         start();
         markRead();
+        revealFromHash();
     });
 })();
 </script>

@@ -13,11 +13,14 @@
  *   ?action=mark_read     -> {"success": true}                POST, unread counter
  *
  * Global action (no ticket needed):
- *   ?action=notifications -> {"messages": [...]}   recent replies on my tickets
+ *   ?action=notifications -> {"messages": [...], "tickets": [...]}
+ *                            recent replies on my tickets, and tickets that
+ *                            just landed in the queue (technicians only)
  */
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\UserMention;
+use Glpi\Timeline\NewTickets;
 
 /**
  * Stop with a plain HTTP status. Avoids depending on the exception classes,
@@ -111,7 +114,18 @@ if ($action === 'notifications') {
         }
     }
 
-    echo json_encode(['messages' => $messages]);
+    // Tickets that just arrived. Separate list, separate look in the browser:
+    // "somebody replied to you" and "work is waiting" are not the same news.
+    $tickets = [];
+    try {
+        if (class_exists(NewTickets::class)) {
+            $tickets = NewTickets::getRecent();
+        }
+    } catch (Throwable $e) {
+        $tickets = [];
+    }
+
+    echo json_encode(['messages' => $messages, 'tickets' => $tickets]);
     return;
 }
 

@@ -1,12 +1,19 @@
 {#
- # Global new-message notifier.
+ # Global notifier.
  #
- # Included from the page footer, so it runs on every GLPI page: a reply is
+ # Included from the page footer, so it runs on every GLPI page: news is
  # announced whether the user is reading the ticket or somewhere else entirely.
+ #
+ # Two kinds of news, told apart on purpose:
+ #   - a reply on a ticket   -> blue toast,  "New message", sound A
+ #   - a ticket just created -> green toast, "New ticket",  sound B
  #
  # State lives in localStorage, not in the database: no table, no migration.
  #}
 
+{# The footer is also rendered on anonymous pages (login, error pages), where
+ # polling would only produce 403s. #}
+{% if session('glpiID') %}
 <script type="text/javascript">
 (function() {
     // The footer is rendered once, but guard anyway: a duplicated include
@@ -19,21 +26,42 @@
     var POLL_INTERVAL = 10000;
     var ENDPOINT      = CFG_GLPI.root_doc + '/ajax/livetimeline.php';
     var TICKET_URL    = CFG_GLPI.root_doc + '/front/ticket.form.php?id=';
-    var STORAGE_KEY   = 'glpi_live_notifier_last_id';
+
+    // Timeline entries carry id="ITILFollowup_<id>" (timeline_entries.html.twig),
+    // which is what lets a notification point at one message rather than at
+    // the top of the ticket.
+    var ANCHOR_PREFIX = 'ITILFollowup_';
+
+    // Distinct sounds, so the two kinds of news are told apart without looking.
+    var SOUND_MESSAGE = 'sound_a';
+    var SOUND_TICKET  = 'sound_b';
+
+    // One watermark per kind: messages and tickets have independent id
+    // sequences, and sharing a key would make one kind mask the other.
+    var MESSAGE_KEY = 'glpi_live_notifier_last_id';
+    var TICKET_KEY  = 'glpi_live_notifier_last_ticket_id';
 
     var _timer = null;
+    var _audio_unlocked = false;
 
-    function lastNotifiedId() {
+    /**
+     * Highest id already announced, or null when this browser has never seen
+     * this kind of news. The difference matters: null means "adopt whatever
+     * is on screen silently", 0 means "the list was empty, announce the next
+     * one" — without it a fresh user would swallow their first notification.
+     */
+    function watermark(key) {
         try {
-            return parseInt(window.localStorage.getItem(STORAGE_KEY), 10) || 0;
+            var stored = window.localStorage.getItem(key);
+            return stored === null ? null : (parseInt(stored, 10) || 0);
         } catch (e) {
-            return 0;   // private browsing, storage disabled: degrade quietly
+            return null;   // private browsing, storage disabled: degrade quietly
         }
     }
 
-    function rememberId(id) {
+    function remember(key, id) {
         try {
-            window.localStorage.setItem(STORAGE_KEY, String(id));
+            window.localStorage.setItem(key, String(id));
         } catch (e) {
             // nothing to do: without storage the page simply re-notifies later
         }
@@ -53,18 +81,97 @@
         return node.innerHTML;
     }
 
-    function notifyDesktop(message) {
+    // --- sound ------------------------------------------------------------
+
+    /**
+     * Two <source> children rather than `new Audio(src)`, so a browser that
+     * refuses mp3 falls back to ogg — the same pairing GLPI already ships in
+     * public/sound/ and uses in notifications_ajax.js.
+     */
+    function buildAudio(name) {
+        var audio = document.createElement('audio');
+
+        [['mp3', 'audio/mpeg'], ['ogg', 'audio/ogg']].forEach(function(format) {
+            var source = document.createElement('source');
+            source.src  = CFG_GLPI.root_doc + '/sound/' + name + '.' + format[0];
+            source.type = format[1];
+            audio.appendChild(source);
+        });
+
+        return audio;
+    }
+
+    /**
+     * Play a notification sound, or stay silent if the browser will not have
+     * it. play() returns a promise that rejects under the autoplay policy;
+     * leaving it uncaught would print an error on every blocked sound.
+     */
+    function playSound(name) {
+        if (!name) {
+            return;
+        }
+
+        try {
+            var played = buildAudio(name).play();
+            if (played && typeof played.catch === 'function') {
+                played.catch(function() {});
+            }
+        } catch (e) {
+            // a missing sound must never break the notification that wanted it
+        }
+    }
+
+    // The in-ticket timeline plays the same sounds: one implementation, shared.
+    window.glpiPlayNotificationSound = playSound;
+
+    /**
+     * Browsers only allow audio once the user has interacted with the page.
+     * Playing one silent sound on that first interaction buys the right to
+     * play audible ones later.
+     */
+    function unlockAudio() {
+        if (_audio_unlocked) {
+            return;
+        }
+        _audio_unlocked = true;
+
+        try {
+            var audio = buildAudio(SOUND_MESSAGE);
+            audio.volume = 0;
+            var played = audio.play();
+            if (played && typeof played.catch === 'function') {
+                played.catch(function() {});
+            }
+        } catch (e) {
+            // ignored: the toast works without any sound
+        }
+    }
+
+    // --- notifications ----------------------------------------------------
+
+    /** Link to a ticket, and to one precise message when we know which. */
+    function ticketUrl(tickets_id, followup_id) {
+        var url = TICKET_URL + encodeURIComponent(tickets_id);
+
+        if (followup_id) {
+            url += '#' + ANCHOR_PREFIX + encodeURIComponent(followup_id);
+        }
+
+        return url;
+    }
+
+    function notifyDesktop(title, body_text, tag, url) {
         if (typeof Notification === 'undefined' || Notification.permission !== 'granted') {
             return;
         }
         try {
-            var notification = new Notification(
-                '{{ __('New message')|e('js') }}',
-                {body: message.ticket, tag: 'glpi-ticket-' + message.tickets_id}
-            );
+            // The tag collapses repeats of the same news. It carries the kind
+            // as well as the ticket, because one ticket can legitimately
+            // produce both a "created" and a "replied" notification.
+            var notification = new Notification(title, {body: body_text, tag: tag});
             notification.onclick = function() {
                 window.focus();
-                window.location.href = TICKET_URL + encodeURIComponent(message.tickets_id);
+                window.location.href = url;
             };
         } catch (e) {
             // Some browsers throw when constructing notifications outside a
@@ -72,16 +179,93 @@
         }
     }
 
-    function notify(message) {
-        var url  = TICKET_URL + encodeURIComponent(message.tickets_id);
-        var body = '<a href="' + escape(url) + '" class="text-white text-decoration-underline">'
-                 + escape(message.ticket)
-                 + '</a>';
+    /** Toast body: an icon marking the kind, then a link to the message. */
+    function body(icon, url, label) {
+        return '<i class="ti ' + icon + ' me-2"></i>'
+             + '<a href="' + escape(url) + '" class="text-white text-decoration-underline">'
+             + escape(label)
+             + '</a>';
+    }
+
+    function notifyMessage(message) {
+        var title = '{{ __('New message')|e('js') }}';
+        var url   = ticketUrl(message.tickets_id, message.id);
 
         // Signature is (message, caption): body first, title second.
-        glpi_toast_info(body, '{{ __('New message')|e('js') }}', {delay: 8000});
+        glpi_toast_info(body('ti-message-circle', url, message.ticket), title, {delay: 8000});
 
-        notifyDesktop(message);
+        notifyDesktop(title, message.ticket, 'glpi-msg-' + message.tickets_id, url);
+    }
+
+    function notifyTicket(ticket) {
+        var title = '{{ __('New ticket')|e('js') }}';
+        var url   = ticketUrl(ticket.id, null);
+
+        // Green rather than blue: a ticket landing in the queue is work
+        // arriving, not a conversation continuing.
+        glpi_toast_success(body('ti-ticket', url, ticket.name), title, {delay: 8000});
+
+        notifyDesktop(title, ticket.name, 'glpi-new-' + ticket.id, url);
+    }
+
+    /**
+     * A message on the ticket the user is currently reading is already handled
+     * there: the timeline injects it and plays the sound. Announcing it again
+     * globally would double both the toast and the beep.
+     */
+    function onOpenTicket(message) {
+        var open = parseInt(window.__glpiOpenTicketId, 10);
+
+        return !isNaN(open) && open === parseInt(message.tickets_id, 10);
+    }
+
+    /**
+     * Announce what is newer than the watermark, oldest first so the newest
+     * toast ends up on top.
+     *
+     * @param {Function} [skip] entries it answers true for are swallowed
+     * @return {boolean} whether anything was announced
+     */
+    function announce(list, key, notify, skip) {
+        if (!Array.isArray(list)) {
+            return false;
+        }
+
+        var known = watermark(key);
+
+        // First run in this browser: adopt the current state without saying
+        // anything, otherwise the user would be flooded with old news.
+        if (known === null) {
+            remember(key, list.length > 0 ? list[0].id : 0);
+            return false;
+        }
+
+        var fresh = list.filter(function(entry) {
+            return entry.id > known;
+        });
+
+        if (fresh.length === 0) {
+            return false;
+        }
+
+        // Claim the news before showing it, so other open tabs do not announce
+        // the same items — and so anything skipped below is not replayed on
+        // the next page the user opens.
+        remember(key, list[0].id);   // server sorts by id desc
+
+        if (typeof skip === 'function') {
+            fresh = fresh.filter(function(entry) {
+                return !skip(entry);
+            });
+        }
+
+        if (fresh.length === 0) {
+            return false;
+        }
+
+        fresh.reverse().forEach(notify);
+
+        return true;
     }
 
     function poll() {
@@ -95,35 +279,28 @@
             dataType: 'json',
             data: {action: 'notifications'}
         }).done(function(data) {
-            if (!data || !Array.isArray(data.messages) || data.messages.length === 0) {
+            if (!data) {
                 return;
             }
 
-            var messages = data.messages;
-            var highest  = messages[0].id;   // server sorts by id desc
-            var known    = lastNotifiedId();
+            var new_messages = announce(data.messages, MESSAGE_KEY, notifyMessage, onOpenTicket);
 
-            // First run in this browser: adopt the current state silently,
-            // otherwise the user would be flooded with old messages.
-            if (known === 0) {
-                rememberId(highest);
-                return;
+            // `tickets` is absent for helpdesk users: they have no queue.
+            var new_tickets = announce(data.tickets, TICKET_KEY, notifyTicket);
+
+            // One sound per round: two overlapping ones just sound broken.
+            // A reply is the more personal of the two, so it wins.
+            if (new_messages) {
+                playSound(SOUND_MESSAGE);
+            } else if (new_tickets) {
+                playSound(SOUND_TICKET);
             }
 
-            if (highest <= known) {
-                return;
+            if (new_messages || new_tickets) {
+                // Let the header counter catch up now rather than on its own
+                // slower schedule.
+                $(document).trigger('glpi.unread.refresh');
             }
-
-            // Claim the messages before showing them, so other open tabs do
-            // not announce the same replies.
-            rememberId(highest);
-
-            messages
-                .filter(function(message) {
-                    return message.id > known;
-                })
-                .reverse()   // oldest first, so the newest toast ends up on top
-                .forEach(notify);
         });
         // network errors are ignored on purpose: the next tick will retry
     }
@@ -150,18 +327,21 @@
         }
     });
 
-    // Browsers reject permission requests that are not tied to a user gesture,
-    // so ask on the first click rather than on load.
-    if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
-        document.addEventListener('click', function askOnce() {
-            document.removeEventListener('click', askOnce);
+    // Browsers reject both permission requests and audio that are not tied to
+    // a user gesture, so do the two on the first click rather than on load.
+    document.addEventListener('click', function askOnce() {
+        document.removeEventListener('click', askOnce);
+
+        unlockAudio();
+
+        if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
             try {
                 Notification.requestPermission();
             } catch (e) {
                 // ignored: the in-app toast works without any permission
             }
-        }, {once: true});
-    }
+        }
+    }, {once: true});
 
     $(function() {
         poll();
@@ -169,3 +349,4 @@
     });
 })();
 </script>
+{% endif %}
