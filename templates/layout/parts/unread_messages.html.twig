@@ -127,7 +127,10 @@
 
             var label = document.createElement('span');
             label.className = 'text-truncate me-2';
-            label.textContent = entry.name;   // textContent: never inject ticket titles as HTML
+            // Same "#42 \u2014 title" shape as the toasts: the number is what
+            // lets the reader place a ticket among look-alike titles.
+            // textContent, never innerHTML: titles come from the database.
+            label.textContent = '#' + entry.items_id + ' \u2014 ' + entry.name;
             link.appendChild(label);
 
             if (with_count) {

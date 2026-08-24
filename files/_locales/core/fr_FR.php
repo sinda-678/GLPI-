@@ -19,4 +19,10 @@ return [
     'Unread messages' => 'Messages non lus',
     'New message'     => 'Nouveau message',
     'Nothing new'     => 'Rien de nouveau',
+
+    // %d est substitue cote JS, au moment de la notification.
+    '%d new messages' => '%d nouveaux messages',
+
+    // Utilisee par la timeline du ticket, non traduite par GLPI non plus.
+    'new message(s) received' => 'nouveau(x) message(s) recu(s)',
 ];

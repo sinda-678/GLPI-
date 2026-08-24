@@ -32,6 +32,9 @@
     // the top of the ticket.
     var ANCHOR_PREFIX = 'ITILFollowup_';
 
+    // %d is substituted in JS: the count is only known at notification time.
+    var LABEL_N_MESSAGES = '{{ __('%d new messages')|e('js') }}';
+
     // Distinct sounds, so the two kinds of news are told apart without looking.
     var SOUND_MESSAGE = 'sound_a';
     var SOUND_TICKET  = 'sound_b';
@@ -187,14 +190,64 @@
              + '</a>';
     }
 
-    function notifyMessage(message) {
+    /**
+     * "#42 \u2014 Broken printer". The number carries the weight: ticket titles
+     * repeat across a helpdesk, and a notification the reader cannot place is
+     * a notification they learn to ignore.
+     *
+     * \u2014 and \u00b7 are escaped rather than written literally so this file
+     * stays pure ASCII and cannot be mangled by an encoding mishap.
+     */
+    function ticketLabel(tickets_id, name) {
+        return '#' + tickets_id + ' \u2014 ' + name;
+    }
+
+    /**
+     * Fold a batch of replies into one entry per ticket.
+     *
+     * Three answers on the same ticket are one piece of news, not three: as
+     * separate toasts they look identical and read as noise. The oldest id of
+     * each group is kept, so the link lands where reading should resume.
+     */
+    function groupMessages(list) {
+        var order  = [];
+        var groups = {};
+
+        list.forEach(function(message) {
+            var key = message.tickets_id;
+
+            if (!groups[key]) {
+                groups[key] = {
+                    tickets_id: message.tickets_id,
+                    ticket:     message.ticket,
+                    first_id:   message.id,
+                    count:      0
+                };
+                order.push(key);
+            }
+
+            groups[key].count++;
+            if (message.id < groups[key].first_id) {
+                groups[key].first_id = message.id;
+            }
+        });
+
+        return order.map(function(key) { return groups[key]; });
+    }
+
+    function notifyMessage(group) {
         var title = '{{ __('New message')|e('js') }}';
-        var url   = ticketUrl(message.tickets_id, message.id);
+        var url   = ticketUrl(group.tickets_id, group.first_id);
+        var label = ticketLabel(group.tickets_id, group.ticket);
+
+        if (group.count > 1) {
+            label += ' \u00b7 ' + LABEL_N_MESSAGES.replace('%d', group.count);
+        }
 
         // Signature is (message, caption): body first, title second.
-        glpi_toast_info(body('ti-message-circle', url, message.ticket), title, {delay: 8000});
+        glpi_toast_info(body('ti-message-circle', url, label), title, {delay: 8000});
 
-        notifyDesktop(title, message.ticket, 'glpi-msg-' + message.tickets_id, url);
+        notifyDesktop(title, label, 'glpi-msg-' + group.tickets_id, url);
     }
 
     function notifyTicket(ticket) {
@@ -203,9 +256,11 @@
 
         // Green rather than blue: a ticket landing in the queue is work
         // arriving, not a conversation continuing.
-        glpi_toast_success(body('ti-ticket', url, ticket.name), title, {delay: 8000});
+        var label = ticketLabel(ticket.id, ticket.name);
 
-        notifyDesktop(title, ticket.name, 'glpi-new-' + ticket.id, url);
+        glpi_toast_success(body('ti-ticket', url, label), title, {delay: 8000});
+
+        notifyDesktop(title, label, 'glpi-new-' + ticket.id, url);
     }
 
     /**
@@ -223,10 +278,11 @@
      * Announce what is newer than the watermark, oldest first so the newest
      * toast ends up on top.
      *
-     * @param {Function} [skip] entries it answers true for are swallowed
+     * @param {Function} [skip]  entries it answers true for are swallowed
+     * @param {Function} [group] folds the survivors before they are announced
      * @return {boolean} whether anything was announced
      */
-    function announce(list, key, notify, skip) {
+    function announce(list, key, notify, skip, group) {
         if (!Array.isArray(list)) {
             return false;
         }
@@ -263,7 +319,13 @@
             return false;
         }
 
-        fresh.reverse().forEach(notify);
+        fresh.reverse();   // oldest first, so the newest toast ends up on top
+
+        if (typeof group === 'function') {
+            fresh = group(fresh);
+        }
+
+        fresh.forEach(notify);
 
         return true;
     }
@@ -283,7 +345,7 @@
                 return;
             }
 
-            var new_messages = announce(data.messages, MESSAGE_KEY, notifyMessage, onOpenTicket);
+            var new_messages = announce(data.messages, MESSAGE_KEY, notifyMessage, onOpenTicket, groupMessages);
 
             // `tickets` is absent for helpdesk users: they have no queue.
             var new_tickets = announce(data.tickets, TICKET_KEY, notifyTicket);
