@@ -1,0 +1,27 @@
+# Fichiers propres a chaque installation : ils different sur chaque machine et
+# ne doivent jamais voyager par le depot.
+#
+# config/glpicrypt.key en particulier : le perdre ou l'ecraser rend illisible
+# tout mot de passe chiffre en base (LDAP, SMTP, collecteurs...).
+config/config_db.php
+config/config_db_slave.php
+config/glpicrypt.key
+config/oauth.pem
+config/oauth.pub
+
+# Donnees d'execution : regenerees, propres a la machine, ou privees.
+files/_cache/
+files/_cron/
+files/_dumps/
+files/_graphs/
+files/_lock/
+files/_log/
+files/_pictures/
+files/_plugins/
+files/_rss/
+files/_sessions/
+files/_tmp/
+files/_uploads/
+
+# files/_locales/ reste suivi volontairement : il porte les traductions
+# francaises que ce projet ajoute par-dessus le catalogue de GLPI.
