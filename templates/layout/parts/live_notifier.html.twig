@@ -182,10 +182,25 @@
         }
     }
 
-    /** Toast body: an icon marking the kind, then a link to the message. */
-    function body(icon, url, label) {
-        return '<i class="ti ' + icon + ' me-2"></i>'
-             + '<a href="' + escape(url) + '" class="text-white text-decoration-underline">'
+    /**
+     * Toast body: an icon marking the kind, then a link to the message.
+     *
+     * glpi_toast puts its colour class on the HEADER only; the body keeps
+     * `background: var(--tblr-bg-surface)` (see css/includes/_base.scss).
+     * A `text-white` link in here is therefore white on white — which is how
+     * this toast first shipped, showing the icon and nothing else.
+     *
+     * The link carries no colour class on purpose: Tabler's own link colour
+     * already adapts to the theme (#066fd1 on light, #6aa8e3 on dark) and
+     * clears WCAG AA on both, where a fixed `text-primary` would fail the
+     * dark theme and a fixed `text-success` would fail the light one.
+     *
+     * `tone` colours the icon only, and uses the -emphasis variants, which
+     * Tabler redefines per theme for exactly this reason.
+     */
+    function body(icon, tone, url, label) {
+        return '<i class="ti ' + icon + ' me-2 ' + tone + '"></i>'
+             + '<a href="' + escape(url) + '" class="fw-bold text-decoration-underline">'
              + escape(label)
              + '</a>';
     }
@@ -254,7 +269,7 @@
         }
 
         // Signature is (message, caption): body first, title second.
-        glpi_toast_info(body('ti-message-circle', url, label), title, {delay: 8000});
+        glpi_toast_info(body('ti-message-circle', 'text-primary-emphasis', url, label), title, {delay: 8000});
 
         notifyDesktop(title, label, 'glpi-msg-' + group.tickets_id, url);
     }
@@ -267,7 +282,7 @@
         // arriving, not a conversation continuing.
         var label = ticketLabel(ticket.id, ticket.name);
 
-        glpi_toast_success(body('ti-ticket', url, label), title, {delay: 8000});
+        glpi_toast_success(body('ti-ticket', 'text-success-emphasis', url, label), title, {delay: 8000});
 
         notifyDesktop(title, label, 'glpi-new-' + ticket.id, url);
     }
