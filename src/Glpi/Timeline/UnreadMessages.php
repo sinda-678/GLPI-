@@ -85,6 +85,42 @@ final class UnreadMessages
     }
 
     /**
+     * SQL restricting tickets to those the current user may be told about.
+     *
+     * Someone allowed to read every ticket gets no restriction at all: the
+     * caller already filters on the active entities, which is the real
+     * boundary for them. That matters because replying to a ticket does not
+     * make anyone an actor of it in GLPI — a technician working a ticket he
+     * was never formally assigned to would otherwise never hear about the
+     * answers he is waiting for.
+     *
+     * For everyone else the actor tables stay the boundary, and they cover
+     * every way a ticket can be visible to them: requester, observer and
+     * assignee all live in glpi_tickets_users, groups in glpi_groups_tickets.
+     *
+     * @param string $alias alias of glpi_tickets in the calling query
+     * @return string an ' AND (...)' fragment, or '' when unrestricted
+     */
+    public static function visibilityClause(string $alias = 't'): string
+    {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+            return '';
+        }
+
+        $users_id = (int) Session::getLoginUserID();
+
+        $clauses = ["`{$alias}`.`id` IN (SELECT `tickets_id` FROM `glpi_tickets_users` WHERE `users_id` = {$users_id})"];
+
+        $groups = array_map('intval', $_SESSION['glpigroups'] ?? []);
+        if ($groups !== []) {
+            $groups_in = implode(',', $groups);
+            $clauses[] = "`{$alias}`.`id` IN (SELECT `tickets_id` FROM `glpi_groups_tickets` WHERE `groups_id` IN ({$groups_in}))";
+        }
+
+        return ' AND (' . implode(' OR ', $clauses) . ')';
+    }
+
+    /**
      * Whether the read-state table has been installed.
      */
     public static function isAvailable(): bool
@@ -157,12 +193,7 @@ final class UnreadMessages
         }
         $entities_in = implode(',', $entities);
 
-        $groups = array_map('intval', $_SESSION['glpigroups'] ?? []);
-        $actor_clause = "t.`id` IN (SELECT `tickets_id` FROM `glpi_tickets_users` WHERE `users_id` = {$users_id})";
-        if ($groups !== []) {
-            $groups_in = implode(',', $groups);
-            $actor_clause .= " OR t.`id` IN (SELECT `tickets_id` FROM `glpi_groups_tickets` WHERE `groups_id` IN ({$groups_in}))";
-        }
+        $visibility = self::visibilityClause('t');
 
         // Private followups are only counted for users allowed to read them.
         $private_clause = Session::haveRight('followup', ITILFollowup::SEEPRIVATE)
@@ -194,7 +225,7 @@ final class UnreadMessages
             WHERE t.`is_deleted` = 0
               AND t.`entities_id` IN ({$entities_in})
               {$closed_clause}
-              AND ({$actor_clause})
+              {$visibility}
               AND f.`date_creation` > COALESCE(r.`last_read_date`, {$baseline})
         SQL;
 

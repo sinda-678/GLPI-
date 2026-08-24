@@ -194,7 +194,7 @@ final class NewTickets
         $entities_in = implode(',', $entities);
 
         $baseline     = DBmysql::quoteValue(UnreadMessages::getBaselineDate());
-        $actor_clause = self::buildActorClause();
+        $actor_clause = UnreadMessages::visibilityClause('t');
 
         $queue_clause = '';
         if ($queue_only) {
@@ -232,36 +232,6 @@ final class NewTickets
         SQL;
     }
 
-    /**
-     * Narrow the candidates for a user who cannot see every ticket.
-     *
-     * Purely a cost saver, never the authority: Ticket::canViewItem() still has
-     * the last word on every row that survives this. It is safe to narrow here
-     * because a user without READALL only ever sees tickets they, or one of
-     * their groups, are an actor of — and the tickets they opened themselves
-     * are already excluded, so nothing else could have passed anyway.
-     *
-     * Without it, such a user would make the poller load and rights-check
-     * dozens of tickets every ten seconds to end up with an empty list.
-     */
-    private static function buildActorClause(): string
-    {
-        if (Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
-            return '';
-        }
-
-        $users_id = (int) Session::getLoginUserID();
-
-        $clauses = ["t.`id` IN (SELECT `tickets_id` FROM `glpi_tickets_users` WHERE `users_id` = {$users_id})"];
-
-        $groups = array_map('intval', $_SESSION['glpigroups'] ?? []);
-        if ($groups !== []) {
-            $groups_in = implode(',', $groups);
-            $clauses[] = "t.`id` IN (SELECT `tickets_id` FROM `glpi_groups_tickets` WHERE `groups_id` IN ({$groups_in}))";
-        }
-
-        return ' AND (' . implode(' OR ', $clauses) . ')';
-    }
 
     /**
      * Run a candidate query and keep only what the current user may read.

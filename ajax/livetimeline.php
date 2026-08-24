@@ -61,12 +61,11 @@ if ($action === 'notifications') {
     if ($entities !== []) {
         $entities_in = implode(',', $entities);
 
-        $actor = "t.`id` IN (SELECT `tickets_id` FROM `glpi_tickets_users` WHERE `users_id` = {$users_id})";
-        $groups = array_map('intval', $_SESSION['glpigroups'] ?? []);
-        if ($groups !== []) {
-            $groups_in = implode(',', $groups);
-            $actor .= " OR t.`id` IN (SELECT `tickets_id` FROM `glpi_groups_tickets` WHERE `groups_id` IN ({$groups_in}))";
-        }
+        // Same scoping as the new-ticket feed: a technician allowed to read
+        // every ticket hears about every reply, actor or not. Replying does
+        // not make anyone an actor in GLPI, so requiring it left technicians
+        // deaf on the very tickets they were working.
+        $visibility = \Glpi\Timeline\UnreadMessages::visibilityClause('t');
 
         // Private followups stay invisible to users who may not read them.
         $private = Session::haveRight('followup', ITILFollowup::SEEPRIVATE)
@@ -91,7 +90,7 @@ if ($action === 'notifications') {
               {$private}
               AND t.`entities_id` IN ({$entities_in})
               {$closed_clause}
-              AND ({$actor})
+              {$visibility}
             ORDER BY f.`id` DESC
             LIMIT 10
         ";
