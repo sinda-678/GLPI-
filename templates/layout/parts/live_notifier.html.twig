@@ -199,7 +199,16 @@
      * stays pure ASCII and cannot be mangled by an encoding mishap.
      */
     function ticketLabel(tickets_id, name) {
-        return '#' + tickets_id + ' \u2014 ' + name;
+        var label = '#' + tickets_id;
+
+        // A ticket can reach us without a usable title — empty in base, or a
+        // field the query did not return. The number alone still identifies
+        // it; an empty label would just look broken.
+        if (typeof name === 'string' && name.trim() !== '') {
+            label += ' \u2014 ' + name.trim();
+        }
+
+        return label;
     }
 
     /**

@@ -130,7 +130,11 @@
             // Same "#42 \u2014 title" shape as the toasts: the number is what
             // lets the reader place a ticket among look-alike titles.
             // textContent, never innerHTML: titles come from the database.
-            label.textContent = '#' + entry.items_id + ' \u2014 ' + entry.name;
+            // Same guard as the toasts: a ticket without a usable title is
+            // still identified by its number rather than shown blank.
+            label.textContent = entry.name
+                ? '#' + entry.items_id + ' \u2014 ' + entry.name
+                : '#' + entry.items_id;
             link.appendChild(label);
 
             if (with_count) {
