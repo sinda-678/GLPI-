@@ -4,9 +4,11 @@
  # Included from the page footer, so it runs on every GLPI page: news is
  # announced whether the user is reading the ticket or somewhere else entirely.
  #
- # Two kinds of news, told apart on purpose:
+ # Three kinds of news, told apart on purpose:
  #   - a reply on a ticket   -> blue toast,  "New message", sound A
  #   - a ticket just created -> green toast, "New ticket",  sound B
+ #   - the ticket moved on   -> its own toast per kind,     sound A
+ #     (solution proposed, approved, refused, ticket closed)
  #
  # State lives in localStorage, not in the database: no table, no migration.
  #}
@@ -27,10 +29,10 @@
     var ENDPOINT      = CFG_GLPI.root_doc + '/ajax/livetimeline.php';
     var TICKET_URL    = CFG_GLPI.root_doc + '/front/ticket.form.php?id=';
 
-    // Timeline entries carry id="ITILFollowup_<id>" (timeline_entries.html.twig),
-    // which is what lets a notification point at one message rather than at
-    // the top of the ticket.
-    var ANCHOR_PREFIX = 'ITILFollowup_';
+    // Timeline entries carry id="<Itemtype>_<id>" (timeline_entries.html.twig),
+    // which is what lets a notification point at one entry rather than at the
+    // top of the ticket.
+    var ANCHOR_FOLLOWUP = 'ITILFollowup';
 
     // %d is substituted in JS: the count is only known at notification time.
     var LABEL_N_MESSAGES = '{{ __('%d new messages')|e('js') }}';
@@ -43,6 +45,42 @@
     // sequences, and sharing a key would make one kind mask the other.
     var MESSAGE_KEY = 'glpi_live_notifier_last_id';
     var TICKET_KEY  = 'glpi_live_notifier_last_ticket_id';
+
+    // Events are watermarked on TIME, not on an id: approving a solution
+    // updates the existing row rather than adding one, so its id never moves
+    // and an id watermark would announce the proposal then stay silent on the
+    // verdict. The stored value also keeps the keys seen at that exact second,
+    // so two events sharing a second cannot hide one another.
+    var EVENT_KEY = 'glpi_live_notifier_last_event';
+
+    // How each kind of ticket event is announced. Keyed by the `kind` the
+    // server sends, so adding one is a line here and a branch in the SQL.
+    var EVENT_LOOKS = {
+        solution: {
+            title: '{{ __('New solution')|e('js') }}',
+            icon:  'ti-bulb',
+            tone:  'text-primary-emphasis',
+            toast: 'info'
+        },
+        approved: {
+            title: '{{ __('Solution approved')|e('js') }}',
+            icon:  'ti-check',
+            tone:  'text-success-emphasis',
+            toast: 'success'
+        },
+        refused: {
+            title: '{{ __('Solution refused')|e('js') }}',
+            icon:  'ti-x',
+            tone:  'text-danger-emphasis',
+            toast: 'warning'
+        },
+        closed: {
+            title: '{{ __('Ticket closed')|e('js') }}',
+            icon:  'ti-lock',
+            tone:  'text-secondary-emphasis',
+            toast: 'info'
+        }
+    };
 
     var _timer = null;
     var _audio_unlocked = false;
@@ -152,15 +190,20 @@
 
     // --- notifications ----------------------------------------------------
 
-    /** Link to a ticket, and to one precise message when we know which. */
-    function ticketUrl(tickets_id, followup_id) {
+    /** Link to a ticket, and to one precise timeline entry when we know which. */
+    function anchorUrl(tickets_id, anchor_type, anchor_id) {
         var url = TICKET_URL + encodeURIComponent(tickets_id);
 
-        if (followup_id) {
-            url += '#' + ANCHOR_PREFIX + encodeURIComponent(followup_id);
+        if (anchor_type && anchor_id) {
+            url += '#' + anchor_type + '_' + encodeURIComponent(anchor_id);
         }
 
         return url;
+    }
+
+    /** Link to a ticket, and to one precise message when we know which. */
+    function ticketUrl(tickets_id, followup_id) {
+        return anchorUrl(tickets_id, followup_id ? ANCHOR_FOLLOWUP : null, followup_id);
     }
 
     function notifyDesktop(title, body_text, tag, url) {
@@ -288,6 +331,39 @@
     }
 
     /**
+     * The ticket moved on: a solution was proposed, approved, refused, or the
+     * ticket was closed.
+     *
+     * Told apart from a reply on purpose. "Somebody answered you" invites you
+     * to read; "a solution is waiting for your approval" asks you to act, and
+     * "the ticket is closed" tells you it is over. Same shape as the other
+     * two, different words, colour and icon.
+     */
+    function notifyEvent(event) {
+        var look = EVENT_LOOKS[event.kind];
+        if (!look) {
+            return;   // a kind this browser does not know about: stay quiet
+        }
+
+        var url   = anchorUrl(event.tickets_id, event.anchor_type, event.anchor_id);
+        var label = ticketLabel(event.tickets_id, event.ticket);
+
+        var toasts = {
+            info:    typeof glpi_toast_info    === 'function' ? glpi_toast_info    : null,
+            success: typeof glpi_toast_success === 'function' ? glpi_toast_success : null,
+            warning: typeof glpi_toast_warning === 'function' ? glpi_toast_warning : null
+        };
+        var toast = toasts[look.toast];
+
+        if (toast) {
+            // Signature is (message, caption): body first, title second.
+            toast(body(look.icon, look.tone, url, label), look.title, {delay: 8000});
+        }
+
+        notifyDesktop(look.title, label, 'glpi-' + event.kind + '-' + event.tickets_id, url);
+    }
+
+    /**
      * A message on the ticket the user is currently reading is already handled
      * there: the timeline injects it and plays the sound. Announcing it again
      * globally would double both the toast and the beep.
@@ -354,6 +430,106 @@
         return true;
     }
 
+    /**
+     * Read the events watermark: the last second announced, and the keys
+     * already announced within that second.
+     *
+     * Returns null when this browser has never seen an event, which means
+     * "adopt whatever is there silently" — the same distinction watermark()
+     * draws for the id-based feeds.
+     */
+    function eventWatermark() {
+        try {
+            var stored = window.localStorage.getItem(EVENT_KEY);
+            if (stored === null) {
+                return null;
+            }
+
+            var state = JSON.parse(stored);
+
+            return {
+                ts:   parseInt(state.ts, 10) || 0,
+                keys: Array.isArray(state.keys) ? state.keys : []
+            };
+        } catch (e) {
+            // storage disabled, or a value written by an older version:
+            // treat it as "never seen" rather than crashing the poll
+            return null;
+        }
+    }
+
+    function rememberEvents(list) {
+        var top = list.length > 0 ? (parseInt(list[0].ts, 10) || 0) : 0;
+
+        try {
+            window.localStorage.setItem(EVENT_KEY, JSON.stringify({
+                ts: top,
+                // Only the keys sharing the newest second are worth keeping:
+                // anything older is already covered by the timestamp alone.
+                keys: list.filter(function(entry) {
+                    return (parseInt(entry.ts, 10) || 0) === top;
+                }).map(function(entry) {
+                    return entry.key;
+                })
+            }));
+        } catch (e) {
+            // nothing to do: without storage the page simply re-announces later
+        }
+    }
+
+    /**
+     * Announce the ticket events this browser has not seen yet.
+     *
+     * Same contract as announce(), watermarked on time instead of on an id.
+     * The server sorts by ts descending.
+     *
+     * @return {Array} the ids of the tickets actually announced, so the caller
+     *                 can keep the message feed from repeating the same news
+     */
+    function announceEvents(list) {
+        if (!Array.isArray(list)) {
+            return [];
+        }
+
+        var known = eventWatermark();
+
+        // First run in this browser: adopt the current state without saying
+        // anything, or the user would be greeted by a day of history.
+        if (known === null) {
+            rememberEvents(list);
+            return [];
+        }
+
+        var fresh = list.filter(function(entry) {
+            var ts = parseInt(entry.ts, 10) || 0;
+
+            return ts > known.ts
+                || (ts === known.ts && known.keys.indexOf(entry.key) === -1);
+        });
+
+        // Claim the news before showing it, so other open tabs do not announce
+        // the same events — and so anything skipped below is not replayed on
+        // the next page the user opens.
+        rememberEvents(list);
+
+        // What happens on the ticket being read is handled by the page itself,
+        // which shows the approval form and says so there.
+        fresh = fresh.filter(function(entry) {
+            return !onOpenTicket(entry);
+        });
+
+        if (fresh.length === 0) {
+            return [];
+        }
+
+        fresh.reverse();   // oldest first, so the newest toast ends up on top
+        fresh.forEach(notifyEvent);
+
+        return fresh.map(function(entry) {
+            return entry.tickets_id;
+        });
+    }
+
     function poll() {
         if (document.hidden) {
             return;
@@ -369,20 +545,44 @@
                 return;
             }
 
-            var new_messages = announce(data.messages, MESSAGE_KEY, notifyMessage, onOpenTicket, groupMessages);
+            // Events go first, because they decide what the message feed is
+            // still allowed to say. Approving a solution writes a followup as
+            // well as moving the solution — GLPI fills the comment in with
+            // "Solution approved" when the approver left it empty — so the one
+            // click would otherwise raise two toasts saying the same thing.
+            // Only the tickets announced in THIS round are muted: a genuine
+            // reply on a ticket whose solution was settled hours ago is news.
+            var announced   = announceEvents(data.events);
+            var new_events  = announced.length > 0;
+            var event_ticket = {};
+            announced.forEach(function(tickets_id) {
+                event_ticket[tickets_id] = true;
+            });
+
+            var new_messages = announce(
+                data.messages,
+                MESSAGE_KEY,
+                notifyMessage,
+                function(message) {
+                    return onOpenTicket(message) || event_ticket[message.tickets_id] === true;
+                },
+                groupMessages
+            );
 
             // `tickets` is absent for helpdesk users: they have no queue.
             var new_tickets = announce(data.tickets, TICKET_KEY, notifyTicket);
 
             // One sound per round: two overlapping ones just sound broken.
-            // A reply is the more personal of the two, so it wins.
-            if (new_messages) {
+            // News about a conversation the user is part of — a reply, or the
+            // fate of a solution — is the more personal, so it wins over work
+            // merely landing in the queue.
+            if (new_messages || new_events) {
                 playSound(SOUND_MESSAGE);
             } else if (new_tickets) {
                 playSound(SOUND_TICKET);
             }
 
-            if (new_messages || new_tickets) {
+            if (new_messages || new_tickets || new_events) {
                 // Let the header counter catch up now rather than on its own
                 // slower schedule.
                 $(document).trigger('glpi.unread.refresh');

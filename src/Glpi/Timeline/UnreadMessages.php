@@ -173,7 +173,7 @@ final class UnreadMessages
      * useful scope (a user cares about "his" tickets) and the cheap one: it
      * avoids walking the whole ticket table.
      *
-     * @return array{total:int, items:array<int, array{items_id:int, itemtype:string, name:string, count:int, first_unread_id:int, last_date:string}>}
+     * @return array{total:int, items:array<int, array{items_id:int, itemtype:string, name:string, count:int, first_unread_anchor:string, last_date:string}>}
      */
     public static function getSummary(?int $users_id = null): array
     {
@@ -200,9 +200,18 @@ final class UnreadMessages
             ? ''
             : ' AND f.`is_private` = 0';
 
+        // Hiding closed tickets outright used to hide the very thing the user
+        // needed to see: the solution and the comment that close a ticket land
+        // at the instant its status becomes closed. A recently closed ticket
+        // therefore stays in scope, and leaves it on its own once the window
+        // has passed — so the counter still never digs up old history.
         $closed = array_map('intval', Ticket::getClosedStatusArray());
+        $recent_since = DBmysql::quoteValue(
+            date('Y-m-d H:i:s', strtotime('-' . SolutionEvents::WINDOW_HOURS . ' hours'))
+        );
         $closed_clause = $closed !== []
-            ? ' AND t.`status` NOT IN (' . implode(',', $closed) . ')'
+            ? ' AND (t.`status` NOT IN (' . implode(',', $closed) . ')'
+                . ' OR (t.`closedate` IS NOT NULL AND t.`closedate` > ' . $recent_since . '))'
             : '';
 
         $table    = self::TABLE;
@@ -211,11 +220,26 @@ final class UnreadMessages
 
         // Shared by the total and the detailed list, so the badge and the
         // dropdown can never disagree.
+        // Followups and solutions are one and the same thing to a reader: both
+        // are entries appearing on a ticket they have not looked at since.
+        // Counting only followups is what left "a solution was proposed" out
+        // of the badge entirely.
         $from_where = <<<SQL
             FROM `glpi_tickets` AS t
-            INNER JOIN `glpi_itilfollowups` AS f
-                    ON f.`itemtype` = 'Ticket'
-                   AND f.`items_id` = t.`id`
+            INNER JOIN (
+                SELECT `id`, `items_id`, `users_id`, `date_creation`,
+                       `is_private`, 'ITILFollowup' AS entry_type
+                FROM `glpi_itilfollowups`
+                WHERE `itemtype` = 'Ticket'
+
+                UNION ALL
+
+                SELECT `id`, `items_id`, `users_id`, `date_creation`,
+                       0 AS `is_private`, 'ITILSolution' AS entry_type
+                FROM `glpi_itilsolutions`
+                WHERE `itemtype` = 'Ticket'
+            ) AS f
+                    ON f.`items_id` = t.`id`
                    AND f.`users_id` <> {$users_id}
                    {$private_clause}
             LEFT JOIN `{$table}` AS r
@@ -231,13 +255,21 @@ final class UnreadMessages
 
         // The counter must reflect every unread message, not only those of the
         // tickets listed in the dropdown, hence a dedicated total.
-        $total_query = "SELECT COUNT(f.`id`) AS total {$from_where}";
+        $total_query = "SELECT COUNT(*) AS total {$from_where}";
 
+        // first_unread_anchor is the oldest unread entry, in the form the
+        // timeline gives it an id: "ITILFollowup_12", "ITILSolution_4". A bare
+        // id no longer identifies an entry now that two tables feed the list —
+        // they number their rows independently — so the type travels with it.
         $list_query = <<<SQL
             SELECT t.`id`                  AS items_id,
                    t.`name`                AS name,
-                   COUNT(f.`id`)           AS unread_count,
-                   MIN(f.`id`)             AS first_unread_id,
+                   COUNT(*)                AS unread_count,
+                   SUBSTRING_INDEX(
+                       GROUP_CONCAT(CONCAT(f.`entry_type`, '_', f.`id`)
+                                    ORDER BY f.`date_creation` ASC, f.`id` ASC),
+                       ',', 1
+                   )                       AS first_unread_anchor,
                    MAX(f.`date_creation`)  AS last_date
             {$from_where}
             GROUP BY t.`id`, t.`name`
@@ -265,7 +297,7 @@ final class UnreadMessages
                     'count'     => (int) $row['unread_count'],
                     // Lets the dropdown link straight to where reading
                     // stopped, instead of dropping the user at the top.
-                    'first_unread_id' => (int) $row['first_unread_id'],
+                    'first_unread_anchor' => (string) $row['first_unread_anchor'],
                     'last_date' => (string) $row['last_date'],
                 ];
             }

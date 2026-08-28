@@ -25,4 +25,13 @@ return [
 
     // Utilisee par la timeline du ticket, non traduite par GLPI non plus.
     'new message(s) received' => 'nouveau(x) message(s) recu(s)',
+
+    // Evenements de solution et de cloture. "Solution approved" est deja
+    // traduit par GLPI ("Solution approuvee") et n'a donc pas sa place ici.
+    'New solution'      => 'Nouvelle solution',
+    'Solution refused'  => 'Solution refusee',
+    'Ticket closed'     => 'Ticket cloture',
+
+    'A solution is waiting for your approval'
+        => 'Une solution attend votre approbation',
 ];

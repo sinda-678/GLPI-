@@ -8,19 +8,22 @@
  * and can be dropped into any GLPI 11.x instance.
  *
  * Ticket-scoped actions (need parenttype + items_id):
- *   ?action=count         -> {"count": N}                     cheap polling
+ *   ?action=count         -> {"count": N, "signature": "..."}  cheap polling
  *   ?action=entries       -> rendered timeline entries (HTML)
+ *   ?action=approval      -> {"html": "..."} solution approval block, or ""
  *   ?action=mark_read     -> {"success": true}                POST, unread counter
  *
  * Global action (no ticket needed):
- *   ?action=notifications -> {"messages": [...], "tickets": [...]}
- *                            recent replies on my tickets, and tickets that
- *                            just landed in the queue (technicians only)
+ *   ?action=notifications -> {"messages": [...], "tickets": [...], "events": [...]}
+ *                            recent replies on my tickets, tickets that just
+ *                            landed in the queue (technicians only), and
+ *                            solution/closure events on tickets I may see
  */
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\UserMention;
 use Glpi\Timeline\NewTickets;
+use Glpi\Timeline\SolutionEvents;
 
 /**
  * Stop with a plain HTTP status. Avoids depending on the exception classes,
@@ -36,7 +39,7 @@ if (Session::getLoginUserID() === false) {
 }
 
 $action = $_REQUEST['action'] ?? null;
-if (!in_array($action, ['count', 'entries', 'mark_read', 'notifications'], true)) {
+if (!in_array($action, ['count', 'entries', 'mark_read', 'notifications', 'approval'], true)) {
     $fail(400);
 }
 
@@ -72,9 +75,24 @@ if ($action === 'notifications') {
             ? ''
             : ' AND f.`is_private` = 0';
 
+        // Window shared with the solution events, so the two feeds never
+        // disagree on what still counts as recent news.
+        $window_hours = class_exists(SolutionEvents::class) ? SolutionEvents::WINDOW_HOURS : 24;
+        $recent_since = DBmysql::quoteValue(
+            date('Y-m-d H:i:s', strtotime("-{$window_hours} hours"))
+        );
+
+        // A ticket that closes must not take its last messages down with it.
+        // The comment written when a solution is approved is posted at the
+        // very instant the ticket becomes closed, so a plain "hide closed
+        // tickets" filter swallows precisely the message announcing the
+        // closure. Recently closed tickets therefore stay in scope, and leave
+        // it on their own once the window has passed — which preserves the
+        // original intent: never dig up the history of a long-closed ticket.
         $closed = array_map('intval', Ticket::getClosedStatusArray());
         $closed_clause = $closed !== []
-            ? ' AND t.`status` NOT IN (' . implode(',', $closed) . ')'
+            ? ' AND (t.`status` NOT IN (' . implode(',', $closed) . ')'
+                . ' OR (t.`closedate` IS NOT NULL AND t.`closedate` > ' . $recent_since . '))'
             : '';
 
         $query = "
@@ -124,7 +142,24 @@ if ($action === 'notifications') {
         $tickets = [];
     }
 
-    echo json_encode(['messages' => $messages, 'tickets' => $tickets]);
+    // The ticket moved on: a solution was proposed, approved, refused, or the
+    // ticket was closed. Third list, third watermark, because these are state
+    // CHANGES rather than new rows and cannot be tracked by a growing id —
+    // see SolutionEvents for why.
+    $events = [];
+    try {
+        if (class_exists(SolutionEvents::class)) {
+            $events = SolutionEvents::getRecent();
+        }
+    } catch (Throwable $e) {
+        $events = [];
+    }
+
+    echo json_encode([
+        'messages' => $messages,
+        'tickets'  => $tickets,
+        'events'   => $events,
+    ]);
     return;
 }
 
@@ -161,11 +196,58 @@ if ($action === 'mark_read') {
     return;
 }
 
+if ($action === 'approval') {
+    header('Content-Type: application/json; charset=UTF-8');
+
+    // The approval block is rendered by the server rather than assembled in
+    // the browser, and for the same reason the timeline entries are: it
+    // carries a CSRF token and a rich text editor, and both have to come out
+    // of the exact code path a regular page load uses, or they are subtly
+    // wrong in ways that only show up when the user clicks Approve.
+    //
+    // An empty string is a legitimate answer, not a failure: it means the form
+    // has no reason to be on screen — the ticket is not solved any more, it is
+    // already closed, or this user is not the one who may approve it. The
+    // template decides that on its own, exactly as it does on a page load.
+    $html = '';
+
+    ob_start();
+    try {
+        TemplateRenderer::getInstance()->display(
+            'components/itilobject/timeline/approbation_form.html.twig',
+            ['item' => $parent]
+        );
+        $html = (string) ob_get_clean();
+    } catch (Throwable $e) {
+        ob_end_clean();
+        // Same rule as everywhere else here: the page that asked must survive.
+    }
+
+    echo json_encode(['html' => $html]);
+    return;
+}
+
 $timeline = $parent->getTimelineItems(['check_view_rights' => true]);
 
 if ($action === 'count') {
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode(['count' => count($timeline)]);
+
+    // `count` alone cannot see the whole picture. Approving a solution adds
+    // nothing to the timeline — it updates the existing solution row and moves
+    // the ticket to closed — so a browser watching only the number of entries
+    // keeps showing an approval form for a ticket that no longer needs one,
+    // until the user reloads. The signature moves on either event.
+    //
+    // `count` is still returned: it is what tells the browser whether it has
+    // to fetch the entries again, or only the approval block.
+    echo json_encode([
+        'count'     => count($timeline),
+        'signature' => implode('|', [
+            count($timeline),
+            (string) ($parent->fields['status'] ?? ''),
+            (string) ($parent->fields['date_mod'] ?? ''),
+        ]),
+    ]);
     return;
 }
 

@@ -83,10 +83,6 @@
     var ENDPOINT      = CFG_GLPI.root_doc + '/ajax/unreadmessages.php';
     var TICKET_URL    = CFG_GLPI.root_doc + '/front/ticket.form.php?id=';
 
-    // Timeline entries carry id="ITILFollowup_<id>", so the dropdown can drop
-    // the user on the first message they have not read yet.
-    var ANCHOR_PREFIX = 'ITILFollowup_';
-
     var _timer = null;
 
     /**
@@ -97,10 +93,10 @@
      * @param {Array}   items       entries returned by the server
      * @param {string}  icon        Tabler icon class marking the kind
      * @param {boolean} with_count  show the number of messages per ticket
-     * @param {string}  [anchor]    prefix linking to the first unread entry
+     * @param {boolean} with_anchor link to the first unread entry
      * @return {boolean} whether the section has anything in it
      */
-    function renderSection(entries_id, section_id, items, icon, with_count, anchor) {
+    function renderSection(entries_id, section_id, items, icon, with_count, with_anchor) {
         var entries = document.getElementById(entries_id);
         var section = document.getElementById(section_id);
         if (!entries || !section) {
@@ -116,9 +112,11 @@
             link.href = TICKET_URL + encodeURIComponent(entry.items_id);
 
             // Resume where reading stopped rather than at the top of a long
-            // ticket. Absent for new tickets: there is no message to aim at.
-            if (anchor && entry.first_unread_id) {
-                link.href += '#' + anchor + encodeURIComponent(entry.first_unread_id);
+            // ticket. The entry carries its own anchor ("ITILFollowup_12",
+            // "ITILSolution_4") now that a solution counts as unread too.
+            // Absent for new tickets: there is nothing to aim at.
+            if (with_anchor && entry.first_unread_anchor) {
+                link.href += '#' + encodeURIComponent(entry.first_unread_anchor);
             }
 
             var mark = document.createElement('i');
@@ -175,11 +173,11 @@
         // is one single thing, so a "1" next to it would be noise.
         var has_messages = renderSection(
             'unread-messages-entries', 'unread-messages-section',
-            messages.items, 'ti-message-circle', true, ANCHOR_PREFIX
+            messages.items, 'ti-message-circle', true, true
         );
         var has_tickets = renderSection(
             'new-tickets-entries', 'new-tickets-section',
-            tickets.items, 'ti-ticket', false, null
+            tickets.items, 'ti-ticket', false, false
         );
 
         // The divider only makes sense between two populated sections.

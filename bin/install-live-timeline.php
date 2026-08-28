@@ -39,6 +39,11 @@ $backup_dir = $root . '/files/_live_timeline_backup';
 $INCLUDE_SCRIPT  = "{{ include('components/itilobject/live_timeline.html.twig') }}";
 $INCLUDE_ENTRIES = "{{ include('components/itilobject/timeline/timeline_entries.html.twig') }}";
 
+// Solution and closure events. Not patched into anything — it is a plain class
+// the endpoint calls behind a class_exists() — but worth reporting, because
+// without it the endpoint quietly stops announcing solutions and closures.
+$events_cls = $root . '/src/Glpi/Timeline/SolutionEvents.php';
+
 // Global notifier: announces new replies on every page, not just the ticket.
 $footer           = $root . '/templates/layout/parts/page_footer.html.twig';
 $notifier_tpl     = $root . '/templates/layout/parts/live_notifier.html.twig';
@@ -97,6 +102,7 @@ if ($mode === 'check') {
     echo "Script    : " . (is_file($script_tpl) ? "present" : "MISSING (live_timeline.html.twig)") . "\n";
     echo "Notif tpl : " . (is_file($notifier_tpl) ? "present" : "MISSING (live_notifier.html.twig)") . "
 ";
+    echo "Events    : " . (is_file($events_cls) ? "present" : "MISSING (src/Glpi/Timeline/SolutionEvents.php)") . "\n";
     echo "Partial   : " . (is_file($entries) ? "present" : "not generated yet") . "\n";
     echo "Backups   : " . (is_dir($backup_dir) ? $backup_dir : "none") . "\n";
     exit(0);

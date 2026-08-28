@@ -11,6 +11,16 @@
  # existing timeline. Nothing is ever removed or replaced, so a reply being
  # written, an open editor or a pending upload are never lost.
  #
+ # The poll watches a SIGNATURE, not just the count: approving a solution adds
+ # no timeline entry at all, it moves the ticket's status. Watching the number
+ # of entries alone is what used to leave a stale Approve/Refuse form on screen.
+ #
+ # The Approve/Refuse block is handled apart from the entries, because
+ # timeline.html.twig includes it on its own, outside the entries partial: no
+ # amount of fetching entries could ever bring it in. It is re-rendered by the
+ # server and swapped in whole, so its CSRF token and its rich text editor come
+ # from the same code path a page load uses.
+ #
  # Polling pauses while the tab is hidden and catches up on focus.
  #
  # Installed by bin/install-live-timeline.php — do not edit by hand.
@@ -46,9 +56,24 @@
         window.__glpiOpenTicketId = ITEMS_ID;
     }
 
-    var _known_count = null;
-    var _timer       = null;
-    var _fetching    = false;
+    // Signature of the page as the server rendered it, so the very first poll
+    // already has something to compare against instead of spending a round
+    // adopting. Must match the shape built by `action=count`.
+    var PAGE_STATUS   = '{{ item.fields['status']|e('js') }}';
+    var PAGE_DATE_MOD = '{{ item.fields['date_mod']|e('js') }}';
+
+    // The approval block lives OUTSIDE the entries partial: timeline.html.twig
+    // includes it on its own, so `action=entries` can never carry it. That is
+    // why a solution arriving used to leave the reader with no Approve/Refuse
+    // form until they reloaded the page. It is fetched and replaced on its own.
+    var APPROVAL_ID = 'glpi-live-approval';
+
+    var _known_count     = null;
+    var _known_signature = null;
+    var _timer           = null;
+    var _fetching        = false;
+    var _approving       = false;
+    var _approval_shown  = false;
 
     function timelineRoot() {
         return document.querySelector('.itil-timeline');
@@ -153,6 +178,146 @@
         });
     }
 
+    /**
+     * The wrapper holding the approval block.
+     *
+     * On a page load the block is already there, rendered by the server. It is
+     * WRAPPED rather than adopted, so that the wrapper stays the only thing
+     * this script ever replaces and there is exactly one .timeline-item per
+     * block, whether it came from the page or from a later fetch.
+     *
+     * @param {boolean} create  build the wrapper when there is nothing to wrap
+     */
+    function approvalHolder(create) {
+        var holder = document.getElementById(APPROVAL_ID);
+        if (holder) {
+            return holder;
+        }
+
+        var root = timelineRoot();
+        if (!root) {
+            return null;
+        }
+
+        // The server-rendered block, recognised by its Approve button.
+        // `add_close` is what makes it unambiguous: `add_reopen` also exists
+        // as a hidden input in the answer form (form_followup.html.twig), and
+        // matching that instead would wrap the wrong item — the answer form
+        // sits right next to this block, so the mistake would be invisible
+        // until the first refresh replaced the reply box with an approval one.
+        var button   = root.querySelector('form button[name="add_close"]');
+        var existing = button ? button.closest('.timeline-item') : null;
+
+        if (existing && existing.parentNode) {
+            holder = document.createElement('div');
+            holder.id = APPROVAL_ID;
+            existing.parentNode.insertBefore(holder, existing);
+            holder.appendChild(existing);
+            return holder;
+        }
+
+        if (!create) {
+            return null;
+        }
+
+        holder = document.createElement('div');
+        holder.id = APPROVAL_ID;
+
+        // Where the server would have put it: just before the answer form, at
+        // the bottom of the conversation.
+        var answer = document.getElementById('new-itilobject-form');
+        if (answer && answer.parentNode) {
+            answer.parentNode.insertBefore(holder, answer);
+        } else {
+            root.appendChild(holder);
+        }
+
+        return holder;
+    }
+
+    /**
+     * Bring the approval block in line with the ticket, fetching it or taking
+     * it away.
+     *
+     * The block is rendered by the server, never assembled here: it carries a
+     * CSRF token and a rich text editor, and both have to come out of the same
+     * code path a page load uses. jQuery's .html() is what makes that work —
+     * it evaluates the inline <script> TinyMCE and the upload widget ship
+     * with, where plain innerHTML would insert a dead textarea.
+     */
+    function refreshApproval() {
+        if (_approving) {
+            return;
+        }
+        _approving = true;
+
+        $.ajax({
+            url: ENDPOINT,
+            type: 'GET',
+            dataType: 'json',
+            data: {action: 'approval', parenttype: PARENT_TYPE, items_id: ITEMS_ID}
+        }).done(function(data) {
+            if (!data || typeof data.html !== 'string') {
+                return;
+            }
+
+            var showing = data.html !== '';
+
+            // Already on screen and still wanted: leave it strictly alone. Its
+            // token is still valid and its form still posts the same thing, so
+            // replacing it would gain nothing — and would throw away a comment
+            // the user may be halfway through writing. Same rule the entries
+            // follow: nothing on screen is ever removed or replaced.
+            if (showing && _approval_shown) {
+                return;
+            }
+
+            var holder = approvalHolder(showing);
+
+            _approval_shown = showing;
+
+            if (!holder) {
+                return;   // nothing on screen, and nothing to put there
+            }
+
+            if (!showing) {
+                // Never leave an orphaned editor behind: TinyMCE keeps a
+                // global registry, and an instance pointing at a textarea that
+                // is gone breaks the next one claiming the same id.
+                if (typeof tinymce !== 'undefined') {
+                    $(holder).find('textarea').each(function() {
+                        var editor = this.id ? tinymce.get(this.id) : null;
+                        if (editor) {
+                            editor.remove();
+                        }
+                    });
+                }
+
+                holder.remove();
+                return;
+            }
+
+            // .html(), not innerHTML: jQuery evaluates the inline <script> the
+            // editor and the upload widget ship with, where innerHTML would
+            // leave a dead textarea behind.
+            $(holder).html(data.html);
+
+            flash(holder.querySelector('.timeline-item') || holder);
+            holder.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+
+            if (typeof glpi_toast_info === 'function') {
+                // Signature is (message, caption): body first, title second.
+                glpi_toast_info(
+                    '{{ __('A solution is waiting for your approval')|e('js') }}',
+                    '{{ __('New solution')|e('js') }}',
+                    {delay: 8000}
+                );
+            }
+        }).always(function() {
+            _approving = false;
+        });
+    }
+
     function fetchEntries() {
         if (_fetching) {
             return;
@@ -231,14 +396,36 @@
             if (!data || typeof data.count === 'undefined') {
                 return;
             }
-            if (_known_count === null) {
-                _known_count = data.count;
+
+            // An endpoint that could not build the signature falls back to the
+            // count, which is all this used to watch.
+            var signature = typeof data.signature === 'string'
+                ? data.signature
+                : String(data.count);
+
+            if (_known_signature === null) {
+                _known_count     = data.count;
+                _known_signature = signature;
                 return;
             }
-            if (data.count !== _known_count) {
-                _known_count = data.count;
+
+            if (signature === _known_signature) {
+                return;
+            }
+
+            var entries_changed = data.count !== _known_count;
+
+            _known_count     = data.count;
+            _known_signature = signature;
+
+            if (entries_changed) {
                 fetchEntries();
             }
+
+            // The approval form turns up and goes away on STATUS, which the
+            // count cannot see: approving a solution adds no timeline entry at
+            // all. Anything having moved is reason enough to ask.
+            refreshApproval();
         });
         // network errors are ignored on purpose: the next tick retries
     }
@@ -270,7 +457,13 @@
     window.addEventListener('hashchange', revealFromHash);
 
     $(function() {
-        _known_count = Object.keys(displayedKeys()).length;
+        _known_count     = Object.keys(displayedKeys()).length;
+        _known_signature = [_known_count, PAGE_STATUS, PAGE_DATE_MOD].join('|');
+
+        // Wrap the block the server already rendered, if there is one, so a
+        // later refresh replaces it instead of adding a second one below it.
+        _approval_shown = approvalHolder(false) !== null;
+
         start();
         markRead();
         revealFromHash();
