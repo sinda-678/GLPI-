@@ -215,14 +215,11 @@ if ($tickets === []) {
 // Who to ring.
 // ---------------------------------------------------------------------------
 
-// Everyone taking part: the actors, plus anyone who has written on the ticket.
-// The second half is what makes an exchange symmetric, since replying to a
-// ticket does not make anyone an actor in GLPI.
-$participants = PushSubscriptions::participantsOf(array_keys($tickets));
-$users        = [];
+$actors = PushSubscriptions::actorsOf(array_keys($tickets));
+$users  = [];
 
-foreach ($participants as $tickets_id => $ticket_participants) {
-    foreach ($ticket_participants as $users_id) {
+foreach ($actors as $tickets_id => $ticket_actors) {
+    foreach ($ticket_actors as $users_id) {
         // Never ring somebody about their own message. Done per ticket, not
         // globally: writing on ticket A is no reason to go unwarned about B.
         if (isset($tickets[$tickets_id][$users_id])) {
