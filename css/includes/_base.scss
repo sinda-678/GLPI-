@@ -333,13 +333,46 @@ body.in_modal {
         --logo: var(--glpi-logo-dark-login);
 
         content: var(--logo);
-        width: 500px;
-        height: 170px;
+        display: block;
+
+        // Fluid rather than fixed. A hard 500x170 overflowed a phone
+        // horizontally and, on a short laptop screen, pushed the sign-in
+        // button below the fold: the form could not be seen without scrolling.
+        width: 100%;
+        max-width: 500px;
+
+        // Height follows the real aspect ratio instead of being imposed. The
+        // logo is 7483x2352 (3.18) and the old box was 2.94, so it was also
+        // being squashed.
+        height: auto;
+        max-height: clamp(60px, 14vh, 170px);
+        object-fit: contain;
+        margin-inline: auto;
     }
 
     .main-content-card {
         .card-header:empty {
             display: none;
+        }
+    }
+}
+
+// The form comes first. On a short viewport the page padding gives way so that
+// login, password and the button stay visible without scrolling; a shrinking
+// logo alone does not free enough room.
+//
+// Keyed on HEIGHT, which is the constraint here. Bootstrap's own spacing
+// utilities only respond to width, hence both this media query and the
+// !important needed to outrank them.
+@media (max-height: 900px) {
+    .page-anonymous {
+        .flex-fill {
+            margin-top: 0 !important;
+        }
+
+        .container-tight {
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
         }
     }
 }

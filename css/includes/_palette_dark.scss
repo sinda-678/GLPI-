@@ -130,7 +130,12 @@
 
     .page-anonymous {
         .glpi-logo {
-            --logo: var(--glpi-logo-light-login) !important;
+            // Same file as the light theme on purpose. The custom logo is an
+            // opaque light card inside a transparent margin, so it stays
+            // legible on a dark background. Pointing here at the stock white
+            // GLPI logo showed the wrong brand, and showed it blurred: that
+            // file is 150x83 stretched into a box six times wider.
+            --logo: var(--glpi-logo-dark-login) !important;
         }
     }
 

@@ -143,7 +143,7 @@
   color: var(--glpi-mainmenu-fg) !important;
 }
 :root[data-glpi-theme-dark="1"] .page-anonymous .glpi-logo {
-  --logo: var(--glpi-logo-light-login) !important;
+  --logo: var(--glpi-logo-dark-login) !important;
 }
 :root[data-glpi-theme-dark="1"] .qtip-bootstrap,
 :root[data-glpi-theme-dark="1"] .popover .popover-body {

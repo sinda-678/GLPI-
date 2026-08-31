@@ -366,13 +366,27 @@ body.in_modal {
 .page-anonymous .glpi-logo {
   --logo: var(--glpi-logo-dark-login);
   content: var(--logo);
-  width: 200px;
-  height: 110px;
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  max-height: clamp(60px, 14vh, 170px);
+  object-fit: contain;
+  margin-inline: auto;
 }
 .page-anonymous .main-content-card .card-header:empty {
   display: none;
 }
 
+@media (max-height: 900px) {
+  .page-anonymous .flex-fill {
+    margin-top: 0 !important;
+  }
+  .page-anonymous .container-tight {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+}
 table.table thead th {
   font-size: 0.625rem;
 }
