@@ -127,17 +127,34 @@ final class PushSubscriptions
     /**
      * Who takes part in each of these tickets.
      *
-     * Actors only — requester, observer, assignee, and the members of any
-     * group in those roles. This is deliberately NARROWER than the in-app feed,
-     * which also serves technicians holding READALL: being able to read every
-     * ticket in the instance is a good reason to see a counter, and a terrible
-     * reason to have a phone buzz. It is also exactly how GLPI's own mail
-     * notifications choose their recipients.
+     * Two kinds of people, and the second is easy to forget:
+     *
+     *   - the ACTORS: requester, observer, assignee, and the members of any
+     *     group in those roles;
+     *   - whoever has actually WRITTEN on the ticket: a followup, a solution,
+     *     or the approval of one.
+     *
+     * That second half is not a nicety. Replying to a ticket does not make
+     * anyone an actor in GLPI, so a technician working a ticket he was never
+     * formally assigned to sits in neither actor table. Targeting actors alone
+     * made the conversation one-sided: the requester was told when the
+     * technician answered, and the technician was never told back. Whoever has
+     * spoken in a conversation gets told when it continues.
+     *
+     * Still deliberately narrower than the in-app feed, which also serves
+     * every technician holding READALL. Being able to read every ticket in the
+     * instance is a good reason to see a counter, and a terrible reason to
+     * have a phone buzz.
+     *
+     * A private followup counts for its AUTHOR: having written one says that
+     * you take part, and says nothing about what it holds. What the reader is
+     * finally shown is fetched in their own session, so a wrong guess here
+     * costs a needless buzz, never a disclosure.
      *
      * @param int[] $tickets_ids
      * @return array<int, int[]> ticket id => user ids
      */
-    public static function actorsOf(array $tickets_ids): array
+    public static function participantsOf(array $tickets_ids): array
     {
         /** @var DBmysql $DB */
         global $DB;
@@ -149,7 +166,9 @@ final class PushSubscriptions
 
         $in = implode(',', $tickets_ids);
 
-        $query = <<<SQL
+                // UNION, not UNION ALL: the same person is very often both an actor
+        // and an author, and one buzz is enough.
+$query = <<<SQL
             SELECT `tickets_id`, `users_id`
             FROM `glpi_tickets_users`
             WHERE `tickets_id` IN ({$in})
@@ -160,9 +179,32 @@ final class PushSubscriptions
             FROM `glpi_groups_tickets` AS gt
             INNER JOIN `glpi_groups_users` AS gu ON gu.`groups_id` = gt.`groups_id`
             WHERE gt.`tickets_id` IN ({$in})
+
+            UNION
+
+            SELECT `items_id`, `users_id`
+            FROM `glpi_itilfollowups`
+            WHERE `itemtype` = 'Ticket'
+              AND `items_id` IN ({$in})
+
+            UNION
+
+            SELECT `items_id`, `users_id`
+            FROM `glpi_itilsolutions`
+            WHERE `itemtype` = 'Ticket'
+              AND `items_id` IN ({$in})
+
+            UNION
+
+            SELECT `items_id`, `users_id_approval`
+            FROM `glpi_itilsolutions`
+            WHERE `itemtype` = 'Ticket'
+              AND `items_id` IN ({$in})
+              AND `users_id_approval` > 0
         SQL;
 
-        $actors = [];
+
+        $participants = [];
 
         try {
             $result = $DB->doQuery($query);
@@ -172,14 +214,14 @@ final class PushSubscriptions
                 $users_id   = (int) $row['users_id'];
 
                 if ($users_id > 0) {
-                    $actors[$tickets_id][$users_id] = $users_id;
+                    $participants[$tickets_id][$users_id] = $users_id;
                 }
             }
         } catch (Throwable $e) {
             return [];
         }
 
-        return array_map('array_values', $actors);
+        return array_map('array_values', $participants);
     }
 
     /**
