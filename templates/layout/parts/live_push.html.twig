@@ -1,0 +1,186 @@
+{#
+ # Push registration.
+ #
+ # Included from the page footer, beside live_notifier.html.twig. The two are
+ # complementary and deliberately separate:
+ #
+ #   live_notifier  polls while a GLPI page is loaded — covers the visible tab,
+ #                  the hidden tab and the minimised window.
+ #   live_push      registers a service worker, so the browser can still be
+ #                  told once no GLPI page is open at all.
+ #
+ # Nothing here duplicates the notifier: the worker stays silent whenever a
+ # GLPI window is focused, because the toast has already said it.
+ #
+ # Push is skipped without a word when the browser lacks the APIs, when the
+ # page is not in a secure context (http:// — the browser refuses to register a
+ # worker at all), or when the server has no VAPID key. The polling notifier
+ # carries on alone in every one of those cases.
+ #}
+
+{% if session('glpiID') %}
+<script type="text/javascript">
+(function() {
+    // The footer is rendered once, but guard anyway: a duplicated include
+    // would otherwise register the worker twice.
+    if (window.__glpiLivePush) {
+        return;
+    }
+    window.__glpiLivePush = true;
+
+    // Scope is "<root_doc>/js/" and that is fine: a push worker controls no
+    // page. See the worker itself for why.
+    var WORKER   = CFG_GLPI.root_doc + '/js/sw-push.js';
+    var ENDPOINT = CFG_GLPI.root_doc + '/ajax/livepush.php';
+
+    // A worker is a static file and cannot reach GLPI's translator, so it is
+    // handed what the page already had translated.
+    var LABELS = {
+        unread:   '{{ __('Unread messages')|e('js') }}',
+        activity: '{{ __('New activity on your tickets')|e('js') }}',
+        several:  '{{ __('%d new messages')|e('js') }}'
+    };
+
+    if (
+        !('serviceWorker' in navigator)
+        || !('PushManager' in window)
+        || typeof Notification === 'undefined'
+    ) {
+        return;
+    }
+
+    // Service workers and the Push API are refused outright outside a secure
+    // context. Checking here turns a console error on an http:// instance into
+    // a silent, deliberate no-op.
+    if (window.isSecureContext === false) {
+        return;
+    }
+
+    /**
+     * The VAPID key travels as base64url text but subscribe() wants the raw
+     * bytes, and it rejects anything else with an error that does not say so.
+     */
+    function decodeKey(base64url) {
+        var padded = (base64url + '='.repeat((4 - base64url.length % 4) % 4))
+            .replace(/-/g, '+')
+            .replace(/_/g, '/');
+
+        var raw   = window.atob(padded);
+        var bytes = new Uint8Array(raw.length);
+
+        for (var i = 0; i < raw.length; i++) {
+            bytes[i] = raw.charCodeAt(i);
+        }
+
+        return bytes;
+    }
+
+    /**
+     * Register the worker, subscribe if this browser has not already, and tell
+     * GLPI where to ring.
+     *
+     * An existing subscription is re-sent rather than skipped: it is how the
+     * server learns about a browser again after the table was rebuilt, or
+     * after somebody else logged in on this machine.
+     */
+    function subscribe(key) {
+        navigator.serviceWorker.register(WORKER)
+            .then(function() {
+                return navigator.serviceWorker.ready;
+            })
+            .then(function(registration) {
+                if (registration.active) {
+                    registration.active.postMessage({type: 'labels', labels: LABELS});
+                }
+
+                return registration.pushManager.getSubscription()
+                    .then(function(existing) {
+                        if (existing) {
+                            return existing;
+                        }
+
+                        return registration.pushManager.subscribe({
+                            // Required by every browser: a push must lead to
+                            // something the user can see. The worker honours
+                            // it, staying silent only when a GLPI window is
+                            // already in front of them.
+                            userVisibleOnly: true,
+                            applicationServerKey: decodeKey(key)
+                        });
+                    });
+            })
+            .then(function(subscription) {
+                if (!subscription) {
+                    return;
+                }
+
+                $.ajax({
+                    url: ENDPOINT,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {action: 'subscribe', endpoint: subscription.endpoint}
+                });
+            })
+            .catch(function() {
+                // Push stays off. The polling notifier still covers every case
+                // except a closed application, so there is nothing to report
+                // and nothing to fix from here.
+            });
+    }
+
+    function start() {
+        if (Notification.permission !== 'granted') {
+            return;
+        }
+
+        $.ajax({
+            url: ENDPOINT,
+            type: 'GET',
+            dataType: 'json',
+            data: {action: 'key'}
+        }).done(function(data) {
+            // An empty key means push is not set up on this instance.
+            if (data && data.key) {
+                subscribe(data.key);
+            }
+        });
+    }
+
+    // Browsers reject a permission request that is not tied to a user gesture.
+    // live_notifier asks on the very same first click; asking again is
+    // harmless — the browser shows one prompt and resolves both callers — and
+    // it removes any dependence on which of the two ran first.
+    document.addEventListener('click', function askOnce() {
+        document.removeEventListener('click', askOnce);
+
+        if (Notification.permission === 'granted') {
+            start();
+            return;
+        }
+
+        if (Notification.permission === 'denied') {
+            return;
+        }
+
+        try {
+            var asked = Notification.requestPermission();
+
+            if (asked && typeof asked.then === 'function') {
+                asked.then(function(state) {
+                    if (state === 'granted') {
+                        start();
+                    }
+                });
+            }
+        } catch (e) {
+            // ignored: the in-app toast works without any permission
+        }
+    }, {once: true});
+
+    // Already granted on a previous visit: nothing to wait for.
+    $(function() {
+        start();
+    });
+})();
+</script>
+{% endif %}

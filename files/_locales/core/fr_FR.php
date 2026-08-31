@@ -34,4 +34,8 @@ return [
 
     'A solution is waiting for your approval'
         => 'Une solution attend votre approbation',
+
+    // Web Push : repli du service worker quand GLPI ne repond pas (hors ligne).
+    'New activity on your tickets'
+        => 'Nouvelle activite sur vos tickets',
 ];

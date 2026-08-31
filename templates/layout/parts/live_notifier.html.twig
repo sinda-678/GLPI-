@@ -10,6 +10,11 @@
  #   - the ticket moved on   -> its own toast per kind,     sound A
  #     (solution proposed, approved, refused, ticket closed)
  #
+ # Polling continues while the tab is hidden or the window is minimised: that
+ # is the whole point of the browser notification. Only the first tab to poll
+ # announces a given item, because the watermark below is claimed in
+ # localStorage, which every tab of the browser shares.
+ #
  # State lives in localStorage, not in the database: no table, no migration.
  #}
 
@@ -367,8 +372,17 @@
      * A message on the ticket the user is currently reading is already handled
      * there: the timeline injects it and plays the sound. Announcing it again
      * globally would double both the toast and the beep.
+     *
+     * "Currently reading" means the tab is actually on screen. The in-ticket
+     * poller pauses while the tab is hidden, so staying silent here would make
+     * the one ticket the user has open the only one they are never told about
+     * — exactly the case this notifier exists for.
      */
     function onOpenTicket(message) {
+        if (document.hidden) {
+            return false;
+        }
+
         var open = parseInt(window.__glpiOpenTicketId, 10);
 
         return !isNaN(open) && open === parseInt(message.tickets_id, 10);
@@ -530,11 +544,11 @@
         });
     }
 
+    // Deliberately NOT gated on document.hidden. A hidden tab is precisely
+    // when the browser notification below is the only thing that can reach the
+    // user, so pausing here made notifyDesktop() unreachable code in the one
+    // situation it was written for.
     function poll() {
-        if (document.hidden) {
-            return;
-        }
-
         $.ajax({
             url: ENDPOINT,
             type: 'GET',
@@ -597,19 +611,12 @@
         }
     }
 
-    function stop() {
-        if (_timer !== null) {
-            clearInterval(_timer);
-            _timer = null;
-        }
-    }
-
+    // The timer runs for the whole life of the page, hidden or not. Coming
+    // back to the tab only earns an immediate poll, so the badge and the
+    // toasts are up to date the moment the user looks.
     document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            stop();
-        } else {
-            start();
-            poll();   // catch up on what arrived while the tab was hidden
+        if (!document.hidden) {
+            poll();
         }
     });
 

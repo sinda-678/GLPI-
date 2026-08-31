@@ -83,6 +83,10 @@
     var ENDPOINT      = CFG_GLPI.root_doc + '/ajax/unreadmessages.php';
     var TICKET_URL    = CFG_GLPI.root_doc + '/front/ticket.form.php?id=';
 
+    // Captured once, before anything is prefixed to it, so repeated renders
+    // rebuild the title from the original instead of stacking "(2) (1) ...".
+    var BASE_TITLE = document.title;
+
     var _timer = null;
 
     /**
@@ -159,12 +163,19 @@
 
         var total = summary.total || 0;
 
+        var shown = total > 99 ? '99+' : String(total);
+
         if (total > 0) {
-            badge.textContent = total > 99 ? '99+' : total;
+            badge.textContent = shown;
             badge.classList.remove('d-none');
         } else {
             badge.classList.add('d-none');
         }
+
+        // The tab strip is the only piece of the application still visible to
+        // someone reading another site, so the count goes in the title too —
+        // the same "(3) ..." a mail client uses.
+        document.title = total > 0 ? '(' + shown + ') ' + BASE_TITLE : BASE_TITLE;
 
         var messages = summary.messages || {};
         var tickets  = summary.tickets  || {};
@@ -189,10 +200,12 @@
         empty.classList.toggle('d-none', has_messages || has_tickets);
     }
 
+    // Not gated on document.hidden, so the glpi.unread.refresh below still
+    // lands while the tab is in the background and the title count stays
+    // honest. The periodic timer is what stops there, not the poll itself:
+    // the notifier fires that event exactly when there is news, which makes a
+    // 30s heartbeat in a tab nobody is looking at pure waste.
     function poll() {
-        if (document.hidden) {
-            return;
-        }
         $.ajax({
             url: ENDPOINT,
             type: 'GET',
