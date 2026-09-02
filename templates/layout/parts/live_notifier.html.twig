@@ -30,8 +30,31 @@
     }
     window.__glpiLiveNotifier = true;
 
-    var POLL_INTERVAL = 10000;
+    // Safety net only. News now arrives through the held request below, within
+    // a second; this tick exists for the case where that request cannot run at
+    // all -- no storage for the leader key, a proxy that refuses long requests,
+    // or a browser that has suspended timers.
+    var POLL_INTERVAL = 20000;
     var ENDPOINT      = CFG_GLPI.root_doc + '/ajax/livetimeline.php';
+
+    // The server holds the waiting request open until something happens, so
+    // the client must outlive the 25s ceiling the server applies to itself.
+    var WAIT_TIMEOUT  = 40000;
+
+    // Only ONE tab per browser keeps a request waiting. A held request occupies
+    // a server worker for its whole life, and browsers allow only six
+    // connections per host: one per open tab would cost real capacity on both
+    // sides and buy nothing, since every tab already shares the same watermark.
+    var LEADER_KEY  = 'glpi_live_notifier_leader';
+    var LEADER_BEAT = 3000;    // how often the leader tries to say it is alive
+    // Silence longer than this means the tab is gone. Generous on purpose:
+    // browsers throttle timers in a hidden tab to about once a minute, so a
+    // leader that is merely in the background stops beating on schedule. A
+    // short window had every hidden tab stealing the role from every other one,
+    // each steal opening one more held request. Failover stays immediate in the
+    // normal case because a closing tab releases the key on its way out; this
+    // only decides how long a CRASHED tab keeps the role.
+    var LEADER_TTL  = 90000;
     var TICKET_URL    = CFG_GLPI.root_doc + '/front/ticket.form.php?id=';
 
     // Timeline entries carry id="<Itemtype>_<id>" (timeline_entries.html.twig),
@@ -611,12 +634,183 @@
         }
     }
 
-    // The timer runs for the whole life of the page, hidden or not. Coming
-    // back to the tab only earns an immediate poll, so the badge and the
-    // toasts are up to date the moment the user looks.
+    // --- one waiting tab per browser --------------------------------------
+
+    var _tab_id    = String(Date.now()) + '-' + Math.random().toString(36).slice(2);
+    var _signature = null;
+    var _waiting   = false;
+    var _backoff   = 0;
+    var _channel   = null;
+
+    function readLeader() {
+        try {
+            var raw = window.localStorage.getItem(LEADER_KEY);
+
+            return raw === null ? null : JSON.parse(raw);
+        } catch (e) {
+            return null;   // private browsing, or a value from an older version
+        }
+    }
+
+    /**
+     * Say we are still alive, but only if we are the one holding the role.
+     *
+     * Called from the waiting request rather than from a timer: network
+     * callbacks are not throttled the way background timers are, and the
+     * waiting request completes at least every 25 seconds. That makes the
+     * heartbeat follow real work instead of a clock the browser may ignore.
+     */
+    function refreshLeadership() {
+        var held = readLeader();
+
+        if (held !== null && held.id === _tab_id) {
+            claimLeadership();
+        }
+    }
+
+    function claimLeadership() {
+        try {
+            window.localStorage.setItem(LEADER_KEY, JSON.stringify({id: _tab_id, ts: Date.now()}));
+        } catch (e) {
+            // Without storage there is no election: every tab waits on its own,
+            // which is the old cost but never a wrong result -- the watermark
+            // still keeps them from announcing the same thing twice.
+        }
+    }
+
+    /**
+     * Whether this tab is the one holding the waiting request.
+     *
+     * Also takes the role when nobody holds it, or when the holder stopped
+     * saying it was alive: a closed tab, a crashed one, or a laptop that went
+     * to sleep. Two tabs can briefly claim it at once; that costs one extra
+     * request and settles itself on the next heartbeat.
+     */
+    function isLeader() {
+        var held = readLeader();
+
+        if (held === null || !held.id || (Date.now() - (held.ts || 0)) > LEADER_TTL) {
+            claimLeadership();
+
+            return true;
+        }
+
+        return held.id === _tab_id;
+    }
+
+    function broadcast() {
+        if (_channel === null) {
+            return;
+        }
+
+        try {
+            _channel.postMessage({type: 'news'});
+        } catch (e) {
+            // A closed channel is not worth reporting: the other tabs still
+            // catch up on their own safety tick.
+        }
+    }
+
+    /**
+     * Ask the server to answer the moment anything moves, then ask again.
+     *
+     * The reply carries no news of its own, only "something changed". What the
+     * user is shown still comes from poll(), which is answered inside their own
+     * session -- so a signal that woke the wrong browser costs one request and
+     * can never disclose a ticket.
+     */
+    function waitLoop() {
+        if (_waiting || !isLeader()) {
+            return;
+        }
+        _waiting = true;
+
+        $.ajax({
+            url: ENDPOINT,
+            type: 'GET',
+            dataType: 'json',
+            timeout: WAIT_TIMEOUT,
+            data: {action: 'wait', signature: _signature === null ? '' : _signature}
+        }).done(function(data) {
+            _backoff = 0;   // the connection is healthy again
+
+            if (!data || typeof data.signature !== 'string') {
+                return;
+            }
+
+            // First answer of this tab: adopt the signature without reacting,
+            // exactly as the watermarks do on their first run.
+            var first  = _signature === null;
+            _signature = data.signature;
+
+            if (data.changed === true && !first) {
+                poll();       // the tested path: announce, dedupe, refresh badge
+                broadcast();  // and let the other tabs refresh their counter
+            }
+        }).fail(function(xhr) {
+            // Network gone, server restarted, proxy cut the connection. Backing
+            // off and asking again IS the reconnection: there is no socket to
+            // rebuild, which is the main reason a held request is easier to
+            // live with here than a persistent one.
+            if (xhr && xhr.status === 403) {
+                _backoff = 60000;   // logged out: stop hammering the login page
+            } else {
+                _backoff = Math.min(Math.max(_backoff * 2, 1000), 30000);
+            }
+        }).always(function() {
+            _waiting = false;
+            refreshLeadership();
+
+            // 200ms on success rather than 0, so a server answering instantly
+            // over and over cannot turn this into a spin.
+            window.setTimeout(waitLoop, _backoff === 0 ? 200 : _backoff);
+        });
+    }
+
+    // Keeps the role alive, and hands it over when its holder disappears.
+    window.setInterval(function() {
+        if (isLeader()) {
+            claimLeadership();
+            waitLoop();   // restarts the loop if it ever fell through
+        }
+    }, LEADER_BEAT);
+
+    // Release the role at once rather than making the others wait out the TTL.
+    window.addEventListener('beforeunload', function() {
+        var held = readLeader();
+
+        if (held !== null && held.id === _tab_id) {
+            try {
+                window.localStorage.removeItem(LEADER_KEY);
+            } catch (e) {
+                // it will expire on its own
+            }
+        }
+    });
+
+    try {
+        if (typeof BroadcastChannel !== 'undefined') {
+            _channel = new BroadcastChannel('glpi_live_notifier');
+            _channel.onmessage = function(event) {
+                if (event.data && event.data.type === 'news') {
+                    // The leader has already announced it; this tab only needs
+                    // its own counter and title brought up to date.
+                    $(document).trigger('glpi.unread.refresh');
+                }
+            };
+        }
+    } catch (e) {
+        _channel = null;   // older browser: the safety tick covers these tabs
+    }
+
+    // The timer runs for the whole life of the page, hidden or not. Coming back
+    // to the tab earns an immediate poll, and the role too: a toast has to
+    // appear where the user is actually looking, and only the leader announces.
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
+            claimLeadership();
             poll();
+            waitLoop();
         }
     });
 
@@ -638,7 +832,8 @@
 
     $(function() {
         poll();
-        start();
+        start();      // safety net
+        waitLoop();   // instant delivery, when this tab holds the role
     });
 })();
 </script>

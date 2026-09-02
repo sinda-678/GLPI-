@@ -14,6 +14,8 @@
  *   ?action=mark_read     -> {"success": true}                POST, unread counter
  *
  * Global action (no ticket needed):
+ *   ?action=wait          -> {"changed": bool, "signature": "..."}  long polling,
+ *                            holds up to 25s and answers the moment anything moves
  *   ?action=notifications -> {"messages": [...], "tickets": [...], "events": [...]}
  *                            recent replies on my tickets, tickets that just
  *                            landed in the queue (technicians only), and
@@ -39,7 +41,7 @@ if (Session::getLoginUserID() === false) {
 }
 
 $action = $_REQUEST['action'] ?? null;
-if (!in_array($action, ['count', 'entries', 'mark_read', 'notifications', 'approval'], true)) {
+if (!in_array($action, ['count', 'entries', 'mark_read', 'notifications', 'approval', 'wait'], true)) {
     $fail(400);
 }
 
@@ -160,6 +162,112 @@ if ($action === 'notifications') {
         'tickets'  => $tickets,
         'events'   => $events,
     ]);
+    return;
+}
+
+// ---------------------------------------------------------------------------
+// Global action: hold the request until something happens.
+//
+// This is what turns a 10s heartbeat into instant delivery. The browser asks
+// "tell me when anything changes", and this holds the connection until it does
+// or until WAIT_MAX seconds have passed. Either way the browser asks again, so
+// a dropped connection heals by itself: there is no socket to reconnect.
+//
+// The answer is deliberately a bare CHANGE SIGNAL, not the news itself. What
+// the user is finally shown still comes from `action=notifications`, answered
+// with their session, entities and profile — the same doorbell-not-letter rule
+// the Web Push sender follows. A signal that woke the wrong browser costs one
+// wasted request; it can never disclose a ticket.
+// ---------------------------------------------------------------------------
+
+if ($action === 'wait') {
+    /** @var DBmysql $DB */
+    global $DB;
+
+    Html::header_nocache();
+    header('Content-Type: application/json; charset=UTF-8');
+
+    // THE critical line. GLPI keeps sessions in files, so a request that holds
+    // its session open blocks every other request from the same user for as
+    // long as it waits — the whole application would freeze for 25 seconds.
+    // GLPI does the same thing for its own long operations, see
+    // Glpi\Controller\Traits\AsyncOperationProgressControllerTrait.
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_write_close();
+    }
+
+    // How long one request may wait. Under the 30s that proxies and browsers
+    // commonly cut at, so the connection ends on our terms rather than theirs.
+    $wait_max  = 25;
+    $wait_tick = 1;
+
+    /**
+     * A cheap fingerprint of "has anything happened at all".
+     *
+     * Deliberately instance-wide rather than per-user: a per-user answer would
+     * mean running the full visibility queries every second. Every component is
+     * a MAX() on an indexed column, and the result is hashed so it carries no
+     * readable volume of activity.
+     *
+     * `glpi_logs` is what makes this trustworthy. The other components can miss
+     * an event: MAX(closedate) does not move when a second ticket is closed
+     * inside the same second as the latest one, and a closure would then go
+     * unnoticed. Ticket and ITILSolution both carry $dohistory = true, so every
+     * such change writes a history row, and that table's auto-increment id is
+     * strictly monotonic — it cannot miss. The others are kept as a fallback
+     * for an instance where history has been turned off.
+     */
+    $signature = static function () use ($DB): string {
+        try {
+            $result = $DB->doQuery(
+                "SELECT (SELECT COALESCE(MAX(`id`), 0) FROM `glpi_itilfollowups`)             AS f,
+                        (SELECT COALESCE(MAX(`id`), 0) FROM `glpi_itilsolutions`)             AS s,
+                        (SELECT COALESCE(MAX(`date_approval`), '') FROM `glpi_itilsolutions`) AS a,
+                        (SELECT COALESCE(MAX(`id`), 0) FROM `glpi_tickets`)                   AS t,
+                        (SELECT COALESCE(MAX(`closedate`), '') FROM `glpi_tickets`)           AS c,
+                        (SELECT COALESCE(MAX(`id`), 0) FROM `glpi_logs`)                      AS l"
+            );
+            $row = $result instanceof mysqli_result ? $result->fetch_assoc() : null;
+
+            return $row === null ? '' : md5(implode('|', $row));
+        } catch (Throwable $e) {
+            // Never let a hiccup turn into a hot loop: an empty signature reads
+            // as "unchanged", so the request simply waits out its time.
+            return '';
+        }
+    };
+
+    $known   = (string) ($_REQUEST['signature'] ?? '');
+    $current = $signature();
+
+    // First call of a browser: hand over the current signature without waiting,
+    // so it has something to compare against on the next round.
+    if ($known === '') {
+        echo json_encode(['changed' => false, 'signature' => $current]);
+        return;
+    }
+
+    $deadline = time() + $wait_max;
+
+    while (time() < $deadline) {
+        if ($current !== '' && $current !== $known) {
+            echo json_encode(['changed' => true, 'signature' => $current]);
+            return;
+        }
+
+        // The browser navigated away or closed the tab: stop holding a worker
+        // for a connection nobody is listening to any more.
+        if (connection_aborted() !== 0) {
+            return;
+        }
+
+        sleep($wait_tick);
+        $current = $signature();
+    }
+
+    // Nothing happened. Answering rather than hanging on lets the browser
+    // decide when to ask again, and keeps every connection short-lived.
+    echo json_encode(['changed' => false, 'signature' => $current]);
     return;
 }
 
